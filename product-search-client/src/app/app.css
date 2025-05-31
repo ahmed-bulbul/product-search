@@ -1,0 +1,128 @@
+/* Reset & base */
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f0f4ff, #d9e2ff);
+  color: #222;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full viewport height */
+  box-shadow: inset 0 0 80px rgb(0 0 0 / 0.04);
+}
+
+/* Header */
+.header {
+  background-color: #334fff;
+  color: white;
+  padding: 18px 24px;
+  box-shadow: 0 5px 15px rgb(51 79 255 / 0.25);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 3px solid #ffbc00;
+  transition: background-color 0.3s ease;
+}
+
+.header:hover {
+  background-color: #3f57ff;
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  user-select: none;
+  text-shadow: 0 2px 5px rgb(0 0 0 / 0.15);
+}
+
+.nav {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.07);
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background-color: #ffbc00;
+  color: #222;
+  outline: none;
+  box-shadow: 0 4px 12px rgb(255 188 0 / 0.7);
+  cursor: pointer;
+}
+
+/* Main content */
+.main-content {
+  flex: 1 0 auto;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 24px 40px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgb(50 50 93 / 0.07);
+  min-height: 400px;
+}
+
+/* Footer sticky at bottom */
+.footer {
+  background: #222;
+  color: #bbb;
+  text-align: center;
+  padding: 18px 0;
+  font-size: 14px;
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
+  box-shadow: 0 -2px 15px rgb(0 0 0 / 0.3);
+  user-select: none;
+  font-weight: 500;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .header-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav {
+    gap: 14px;
+  }
+  .main-content {
+    margin: 20px 12px 30px;
+    padding: 16px;
+  }
+  .logo {
+    font-size: 24px;
+  }
+  .nav-link {
+    font-size: 1rem;
+    padding: 4px 10px;
+  }
+}

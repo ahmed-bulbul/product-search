@@ -1,0 +1,36 @@
+
+
+<main class="main-content">
+  <h1 class="page-title">Find Your Favorite Products</h1>
+  <p class="page-subtitle">Search among thousands of products in our catalog</p>
+
+  <div class="search-container">
+    <input
+      type="text"
+      placeholder="Search for products..."
+      (input)="onSearch($event)"
+      [value]="searchText"
+      class="search-input"
+    />
+    <div *ngIf="loading" class="loader"></div>
+
+    <ul *ngIf="results.length" class="suggestions-list" role="listbox" aria-label="Search results">
+      <li
+        *ngFor="let product of results; let i = index"
+        class="suggestion-item"
+        role="option"
+        tabindex="0"
+        [attr.aria-selected]="i === selectedIndex"
+      >
+        <div class="product-name">{{ product.name }}</div>
+        <div class="product-desc">{{ product.description }}</div>
+        <div class="product-meta">
+          <span class="price">\${{ product.price.toFixed(2) }}</span>
+          <span class="brand">{{ product.brand.name }}</span>
+          <span class="rating">⭐ {{ product.rating }}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</main>
+

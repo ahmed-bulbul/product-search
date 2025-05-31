@@ -1,0 +1,149 @@
+/* Reset & base */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f9fc;
+  color: #222;
+  min-height: 100vh;
+}
+
+/* The app root or main container grows to fill space */
+app-root, .main-content {
+  flex: 1 0 auto; /* grow and shrink */
+  max-width: 900px;
+  margin: 40px auto 0;
+  padding: 0 20px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Header */
+
+
+/* Main content */
+.page-title {
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Search box */
+.search-container {
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 20px;
+  border: 2px solid #ddd;
+  border-radius: 40px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+}
+
+/* Loader */
+.loader {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 3px solid #007bff;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Suggestions dropdown */
+.suggestions-list {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgb(0 0 0 / 0.1);
+  max-height: 320px;
+  overflow-y: auto;
+  text-align: left;
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+/* Suggestion items */
+.suggestion-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item:focus {
+  background-color: #e6f0ff;
+}
+
+/* Product details */
+.product-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 8px 0;
+}
+
+.product-meta {
+  font-size: 13px;
+  color: #999;
+}
+
+.price {
+  color: #007bff;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.brand {
+  margin-right: 12px;
+}
+
