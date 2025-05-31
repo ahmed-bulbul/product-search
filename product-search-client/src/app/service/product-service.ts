@@ -1,29 +1,43 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 import { Product } from '../models/product';
-import { Observable, of, delay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private mockProducts: Product[] = [
-    { id: '1', name: 'iPhone 15', description: 'Apple smartphone', price: 999, rating: 4.8, brand: { id: 'b1', name: 'Apple' } },
-    { id: '2', name: 'Galaxy S24', description: 'Samsung flagship', price: 899, rating: 4.6, brand: { id: 'b2', name: 'Samsung' } },
-    { id: '3', name: 'Pixel 8 Pro', description: 'Google Pixel', price: 799, rating: 4.5, brand: { id: 'b3', name: 'Google' } },
-    { id: '4', name: 'iPad Air', description: 'Apple tablet', price: 699, rating: 4.4, brand: { id: 'b1', name: 'Apple' } },
-  ];
+  private http = inject(HttpClient); // ✅ Use Angular's inject()
 
-  constructor() { }
+  private baseUrl = 'http://localhost:8080/api/v1/products';
 
-
+  /**
+   * Real-time product search (auto-suggest)
+   */
   search(query: string): Observable<Product[]> {
-    const result = this.mockProducts.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase())
-    );
-    return of(result).pipe(delay(300)); // Simulate network delay
+    if (!query?.trim()) {
+      return of([]);
+    }
+
+    const params = new HttpParams().set('name', query.trim());
+    return this.http.get<Product[]>(`${this.baseUrl}/search`, { params });
   }
 
+  /**
+   * Paginated fetch of all products
+   */
+  getAll(page: number = 0, size: number = 10): Observable<{ content: Product[] }> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<{ content: Product[] }>(this.baseUrl, { params });
+  }
+
+  /**
+   * Mock brand list
+   */
   getBrands(): Observable<string[]> {
     return of(['Apple', 'Samsung', 'Google']);
   }

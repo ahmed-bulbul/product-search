@@ -14,23 +14,74 @@
     />
     <div *ngIf="loading" class="loader"></div>
 
-    <ul *ngIf="results.length" class="suggestions-list" role="listbox" aria-label="Search results">
-      <li
-        *ngFor="let product of results; let i = index"
-        class="suggestion-item"
-        role="option"
-        tabindex="0"
-        [attr.aria-selected]="i === selectedIndex"
-      >
-        <div class="product-name">{{ product.name }}</div>
-        <div class="product-desc">{{ product.description }}</div>
-        <div class="product-meta">
-          <span class="price">\${{ product.price.toFixed(2) }}</span>
-          <span class="brand">{{ product.brand.name }}</span>
-          <span class="rating">⭐ {{ product.rating }}</span>
-        </div>
-      </li>
-    </ul>
+        <ul *ngIf="results.length" class="suggestions-list" role="listbox" aria-label="Search results">
+        <li
+            *ngFor="let product of results; let i = index"
+            class="suggestion-item"
+            role="option"
+            tabindex="0"
+            (click)="getProduct(product.name)"
+            [attr.aria-selected]="i === selectedIndex"
+        >
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-desc">{{ product.description }}</div>
+            <div class="product-meta">
+            <span class="price">\${{ product.price.toFixed(2) }}</span>
+            <span class="brand">{{ product.brand.name }}</span>
+            <span class="rating">⭐ {{ product.rating }}</span>
+            </div>
+        </li>
+        </ul>
+
   </div>
+
+  <!-- Below your current search container -->
+<section class="features-section">
+  <h2>Why Shop With Us?</h2>
+  <div class="features-grid">
+    <div class="feature-card" *ngFor="let feature of features">
+      <div class="feature-icon">{{ feature.icon }}</div>
+      <h3>{{ feature.title }}</h3>
+      <p>{{ feature.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="categories-section">
+  <h2>Popular Categories</h2>
+  <div class="categories-list">
+    <button *ngFor="let cat of categories" class="category-btn" (click)="filterByCategory(cat)">
+      {{ cat }}
+    </button>
+  </div>
+</section>
+
+<section class="testimonials-section">
+  <h2>What Our Customers Say</h2>
+  <div class="testimonial" *ngFor="let testimonial of testimonials">
+    <p class="testimonial-text">“{{ testimonial.message }}”</p>
+    <p class="testimonial-author">— {{ testimonial.name }}</p>
+  </div>
+</section>
+
+<section class="newsletter-section">
+  <h2>Stay Updated!</h2>
+  <p>Subscribe to our newsletter for the latest deals and offers.</p>
+  <form (submit)="subscribeNewsletter($event)">
+    <input
+      type="email"
+      placeholder="Enter your email"
+      [(ngModel)]="newsletterEmail"
+      name="newsletterEmail"
+      required
+      class="newsletter-input"
+    />
+    <button type="submit" class="subscribe-btn">Subscribe</button>
+  </form>
+  <p *ngIf="subscriptionSuccess" class="subscription-success">Thanks for subscribing!</p>
+</section>
+
+
+
 </main>
 

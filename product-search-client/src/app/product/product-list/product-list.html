@@ -1,0 +1,65 @@
+
+
+<div class="product-list-container">
+  <h2>Our Products</h2>
+
+  <!-- <pre>{{ displayedProducts | json }}</pre> -->
+
+
+  <div *ngIf="loading" class="loading">Loading products...</div>
+
+  <div *ngIf="!loading && displayedProducts.length === 0" class="no-results">
+    No products found.
+  </div>
+
+  <div class="products-grid" *ngIf="displayedProducts.length > 0">
+ 
+    <div
+      class="product-card"
+      *ngFor="let product of displayedProducts;"
+      tabindex="0"
+    >
+      <img
+        [src]="product.imageUrl"
+        [alt]="product.name"
+        class="product-image"
+        loading="lazy"
+      />
+      <div class="product-info">
+        <h3 class="product-name" title="{{ product.name }}">{{ product.name }}</h3>
+        <p class="product-brand">{{ product.brand.name }}</p>
+        <p class="product-description">{{ product.description }}</p>
+        <div class="product-price-rating">
+          <span class="product-price">\${{ product.price.toFixed(2) }}</span>
+          <span [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
+            ★ {{ product.rating.toFixed(1) }}
+          </span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="pagination" aria-label="Product pagination" *ngIf="totalPages > 1">
+    <button (click)="prevPage()" [disabled]="currentPage === 1" aria-label="Previous page">
+      &laquo; Prev
+    </button>
+
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      [class.active]="currentPage === i + 1"
+      (click)="setPage(i + 1)"
+      [attr.aria-current]="currentPage === i + 1 ? 'page' : null"
+    >
+      {{ i + 1 }}
+    </button>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+      aria-label="Next page"
+    >
+      Next &raquo;
+    </button>
+  </nav>
+</div>

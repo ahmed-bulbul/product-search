@@ -39,8 +39,52 @@ export class Search {
   onSearch(event: Event) {
     const input = event.target as HTMLInputElement;
     this.searchText = input.value;
+    if(this.searchText==''){
+      this.results=[];
+    }
     this.searchSubject.next(this.searchText);
   }
+
+  getProduct(name:string){
+    console.log("get product "+name)
+  }
+
+
+  // Add these properties & methods in your component class
+
+features = [
+  { icon: "🚚", title: "Fast Shipping", description: "Get your orders delivered quickly and reliably." },
+  { icon: "💳", title: "Secure Payments", description: "Your transactions are safe with industry-grade security." },
+  { icon: "🎁", title: "Great Deals", description: "Enjoy exclusive discounts and offers daily." },
+  { icon: "🤝", title: "Customer Support", description: "We're here to help 24/7 with any questions." }
+];
+
+categories = ["Electronics", "Books", "Clothing", "Home & Garden", "Toys", "Sports"];
+
+testimonials = [
+  { name: "Alice J.", message: "Amazing products and top-notch service!" },
+  { name: "Mark S.", message: "I always find what I need quickly here." },
+  { name: "Sophia L.", message: "Customer support was super helpful with my order." }
+];
+
+newsletterEmail = "";
+subscriptionSuccess = false;
+
+filterByCategory(category: string) {
+  // You can add your logic here, e.g., filter results or route to category page
+  console.log("Filter products by category:", category);
+}
+
+subscribeNewsletter(event: Event) {
+  event.preventDefault();
+  if (this.newsletterEmail) {
+    // You can add actual subscription logic here (API call)
+    this.subscriptionSuccess = true;
+    this.newsletterEmail = "";
+    setTimeout(() => (this.subscriptionSuccess = false), 5000);
+  }
+}
+
 
 
 }

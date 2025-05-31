@@ -18,7 +18,7 @@ html, body {
 /* The app root or main container grows to fill space */
 app-root, .main-content {
   flex: 1 0 auto; /* grow and shrink */
-  max-width: 900px;
+
   margin: 40px auto 0;
   padding: 0 20px;
   width: 100%;
@@ -147,3 +147,148 @@ app-root, .main-content {
   margin-right: 12px;
 }
 
+
+
+.features-section, 
+.categories-section, 
+.testimonials-section, 
+.newsletter-section {
+  max-width: 700px;
+  margin: 60px auto 40px;
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.feature-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgb(0 0 0 / 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+}
+
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.category-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.category-btn:hover {
+  background: #0056b3;
+}
+
+.testimonials-section .testimonial {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: 0 8px 15px rgb(0 0 0 / 0.08);
+}
+
+.testimonial-text {
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.testimonial-author {
+  font-weight: 700;
+  color: #007bff;
+}
+
+.newsletter-section form {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.newsletter-input {
+  flex: 1 1 280px;
+  padding: 12px 18px;
+  border-radius: 40px;
+  border: 2px solid #ddd;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.newsletter-input:focus {
+  border-color: #007bff;
+}
+
+.subscribe-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.subscribe-btn:hover {
+  background: #0056b3;
+}
+
+.subscription-success {
+  margin-top: 10px;
+  color: green;
+  font-weight: 700;
+}
+
+.footer {
+  background: #222;
+  color: #eee;
+  padding: 20px 0;
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.social-links {
+  margin-top: 8px;
+}
+
+.social-link {
+  margin: 0 8px;
+  font-size: 1.6rem;
+  color: #eee;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  color: #007bff;
+}
