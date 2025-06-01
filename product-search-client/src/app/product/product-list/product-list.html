@@ -1,4 +1,48 @@
+<div class="search-container with-icon" style="margin-top: 10px;">
+  <input
+    type="text"
+    placeholder="Search for products..."
+    (input)="onSearch($event)"
+    (keydown.enter)="performSearch()"
+    [value]="searchText"
+    class="search-input"
+    [attr.aria-expanded]="results.length > 0"
+    role="combobox"
+    aria-autocomplete="list"
+    aria-controls="suggestions-list"
+  />
+  <span class="search-icon" aria-hidden="true">🔍</span>
 
+  <!-- Spinner loader -->
+  <div *ngIf="loading" class="spinner" aria-label="Loading results"></div>
+
+  <!-- Suggestions -->
+  <ul
+    *ngIf="results.length"
+    class="suggestions-list"
+    role="listbox"
+    id="suggestions-list"
+    aria-label="Search results"
+  >
+    <li
+      *ngFor="let product of results; let i = index"
+      class="suggestion-item"
+      role="option"
+      tabindex="0"
+      [attr.aria-selected]="i === selectedIndex"
+    >
+      <div class="product-name">{{ product.name }}</div>
+      <div class="product-desc">{{ product.description }}</div>
+      <div class="product-meta">
+        <span class="price">\${{ product.price.toFixed(2) }}</span>
+        <span class="brand">{{ product.brand.name }}</span>
+        <span class="rating">⭐ {{ product.rating }}</span>
+      </div>
+      
+
+    </li>
+  </ul>
+</div>
 
 <div class="product-list-container">
   <h2>Our Products</h2>
@@ -18,6 +62,7 @@
       class="product-card"
       *ngFor="let product of displayedProducts;"
       tabindex="0"
+      (click)="productDetails(product.id)"
     >
       <img
         [src]="product.imageUrl"
@@ -34,8 +79,18 @@
           <span [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
             ★ {{ product.rating.toFixed(1) }}
           </span>
-
         </div>
+
+    
+      </div>
+
+      <div class="cart-action" style="margin-top: 15px;">
+        <button (click)="addToCart(product); $event.stopPropagation()">
+        ➕ Add to Cart
+      </button>
+      &nbsp; &nbsp;
+      <div *ngIf="addedProductIds.has(product.id)" class="added-confirmation" role="alert" aria-live="polite">
+        <span class="check-icon">✔️</span> Added to Cart
       </div>
     </div>
   </div>

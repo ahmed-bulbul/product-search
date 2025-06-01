@@ -3,6 +3,10 @@ import { MOCK_PRODUCTS } from '../../mock-data/mock-products';
 import { Product } from '../../models/product';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs/internal/Subject';
+import { debounceTime, switchMap } from 'rxjs';
+import { ProductService } from '../../service/product-service';
+import { CartService } from '../../service/cart-service';
 
 @Component({
   selector: 'app-product-list',
@@ -13,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class ProductList  implements OnInit{
   products: Product[] = [];
   displayedProducts: Product[] = [];
+  cartItems: any[] = []; 
 
   currentPage = 1;
   pageSize = 6;
@@ -20,10 +25,28 @@ export class ProductList  implements OnInit{
 
   loading = false;
 
-  constructor() {}
+  searchText = '';
+  results: Product[] = [];
+  selectedIndex = -1; // for keyboard nav if you want
+  
+  private searchSubject = new Subject<string>();
+
+  constructor(private productService: ProductService,private cartService: CartService) {}
 
   ngOnInit() {
     this.loadProducts();
+
+    this.searchSubject.pipe(
+          debounceTime(300),
+          switchMap(query => {
+            this.loading = true;
+            return this.productService.search(query);
+          })
+        ).subscribe(products => {
+          this.results = products;
+          this.loading = false;
+          this.selectedIndex = -1;
+        });
   }
 
   loadProducts() {
@@ -77,4 +100,41 @@ export class ProductList  implements OnInit{
   getPageArray(): number[] {
     return Array(this.totalPages).fill(0).map((_, i) => i + 1);
   }
+
+
+    onSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchText = input.value;
+    if(this.searchText==''){
+      this.results=[];
+    }
+    this.searchSubject.next(this.searchText);
+  }
+
+  productDetails(id:string){
+    alert("product details "+id)
+  }
+
+  performSearch(){
+    alert(this.searchText)
+  }
+
+  
+
+addedProductIds = new Set<string>();
+
+addToCart(product: Product) {
+  this.cartService.addToCart({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    imageUrl: product.imageUrl,
+    quantity: 1,
+  });
+
+  // Add product id to the set of added products
+  this.addedProductIds.add(product.id);
+}
+
+
 }

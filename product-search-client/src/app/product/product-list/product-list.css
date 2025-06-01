@@ -16,6 +16,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 16px;
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -59,4 +60,183 @@
 .pagination button:hover {
   background-color: #ffbc00;
   color: #222;
+}
+.search-container {
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Search icon */
+.with-icon .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #999;
+  pointer-events: none;
+}
+
+/* Spinner inside input */
+.spinner {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Input styling */
+.search-input {
+  width: 100%;
+  padding: 14px 48px; /* space for icon + spinner */
+  font-size: 20px;
+  border: 2px solid #ddd;
+  border-radius: 40px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+}
+
+/* Suggestions dropdown */
+.suggestions-list {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgb(0 0 0 / 0.1);
+  max-height: 320px;
+  overflow-y: auto;
+  text-align: left;
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+/* Suggestion items */
+.suggestion-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item:focus {
+  background-color: #e6f0ff;
+}
+
+/* Product details inside suggestions */
+.product-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 8px 0;
+}
+
+.product-meta {
+  font-size: 13px;
+  color: #999;
+}
+
+.price {
+  color: #007bff;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.brand {
+  margin-right: 12px;
+}
+
+/* Add to Cart button */
+.cart-action button {
+  background-color: #1877f2; /* Facebook blue */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.cart-action button:hover,
+.cart-action button:focus {
+  background-color: #145dbf; /* darker blue on hover */
+  outline: none;
+  box-shadow: 0 0 6px rgba(24, 119, 242, 0.6);
+}
+
+/* Added to Cart confirmation badge */
+.added-confirmation {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #1877f2;
+  font-weight: 600;
+  font-size: 14px;
+  user-select: none;
+}
+
+/* Circular blue background with white checkmark (like Facebook verified) */
+.check-icon-text {
+  color: #28a745; /* Bootstrap-style success green */
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 6px;
+  user-select: none;
+  vertical-align: middle;
+}
+
+
+/* Optional: animate the confirmation fade-in */
+.added-confirmation {
+  animation: fadeInConfirm 0.4s ease forwards;
+}
+
+@keyframes fadeInConfirm {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

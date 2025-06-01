@@ -1,32 +1,54 @@
-
-<!-- app.component.html or index.html -->
 <body>
   <div class="page-wrapper">
-   <header class="header">
-    <div class="header-content">
-      <div class="logo">🛒 MyShop</div>
-      <nav class="nav">
-        <a href="#" class="nav-link">Home</a>
-        <a routerLink="/products" class="nav-link">Products</a>
-        <a href="#" class="nav-link">Contact</a>
-      </nav>
-    </div>
-  </header>
-    <main class="main-content">
-      
 
-      <router-outlet />
+    <header class="header">
+      <div class="header-content container">
+        <div class="logo" aria-label="MyShop Logo">🛒 <strong>
+          <a routerLink="/"  >MyShop</a>
+          
+          </strong></div>
 
+        <nav class="nav" role="navigation" aria-label="Primary Navigation">
+          <a routerLink="/" 
+            routerLinkActive="active" 
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link" tabindex="0">Home</a>
+          <a routerLink="/products" 
+            routerLinkActive="active" 
+            class="nav-link" tabindex="1">Products</a>
+          <a href="/contact" class="nav-link" tabindex="2">Contact</a>
+        </nav>
+
+        <button 
+        (click)="cartBox.toggleCart()" 
+        class="cart-button" 
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="cartBox.show"
+        aria-label="Toggle shopping cart"
+      >
+        🛒 Cart ({{ cartCount }})
+      </button>
+
+
+        <!-- Single global instance of the cart box -->
+        <app-cart-box-component #cartBox></app-cart-box-component>
+      </div>
+    </header>
+
+    <main class="main-content container" role="main" tabindex="-1">
+      <router-outlet></router-outlet>
     </main>
 
     <footer class="footer">
-  <p>&copy; 2025 YourCompany. All rights reserved.</p>
-  <div class="social-links">
-    <a href="#" aria-label="Facebook" class="social-link">📘</a>
-    <a href="#" aria-label="Twitter" class="social-link">🐦</a>
-    <a href="#" aria-label="Instagram" class="social-link">📸</a>
-  </div>
-</footer>
+      <div class="container footer-content">
+        <p>&copy; 2025 YourCompany. All rights reserved.</p>
+        <div class="social-links" role="contentinfo" aria-label="Social media links">
+          <a href="#" aria-label="Facebook" class="social-link" tabindex="0">📘</a>
+          <a href="#" aria-label="Twitter" class="social-link" tabindex="0">🐦</a>
+          <a href="#" aria-label="Instagram" class="social-link" tabindex="0">📸</a>
+        </div>
+      </div>
+    </footer>
+
   </div>
 </body>
-

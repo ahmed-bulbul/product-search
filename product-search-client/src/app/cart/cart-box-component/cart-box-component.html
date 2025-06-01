@@ -1,0 +1,35 @@
+<div *ngIf="show" class="cart-box" role="dialog" aria-modal="true" aria-label="Shopping Cart">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button (click)="toggleCart()" class="close-btn" aria-label="Close cart">×</button>
+  </div>
+
+  <div *ngIf="cartItems.length === 0" class="empty-cart">
+    Your cart is empty.
+  </div>
+
+  <ul class="cart-list" *ngIf="cartItems.length > 0">
+    <li *ngFor="let item of cartItems" class="cart-item">
+      <img [src]="item.imageUrl" [alt]="item.name" class="cart-item-image" />
+      <div class="cart-item-details">
+        <span class="cart-item-name" [title]="item.name">{{ item.name }}</span>
+        <span class="cart-item-price">\${{ item.price.toFixed(2) }}</span>
+        <div class="cart-item-qty" aria-label="Quantity controls">
+          <button (click)="changeQty(item.id, -1)" aria-label="Decrease quantity">−</button>
+          <span>{{ item.quantity }}</span>
+          <button (click)="changeQty(item.id, 1)" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="cart-footer" *ngIf="cartItems.length > 0">
+    <div class="cart-total">
+      Total: ${{ totalPrice }}
+    </div>
+    <button class="clear-cart-btn" (click)="clearCart()">Clear Cart</button>
+    <button class="checkout-btn" (click)="checkout()" aria-label="Proceed to checkout">
+      Checkout
+    </button>
+  </div>
+</div>
