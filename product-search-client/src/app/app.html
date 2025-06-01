@@ -1,7 +1,7 @@
 <body>
-  <div class="page-wrapper">
+  <div class="page-wrapper" *ngIf="!isAdminPanel">
 
-    <header class="header">
+    <header class="header" >
       <div class="header-content container">
         <div class="logo" aria-label="MyShop Logo">🛒 <strong>
           <a routerLink="/"  >MyShop</a>
@@ -35,9 +35,8 @@
       </div>
     </header>
 
-    <main class="main-content container" role="main" tabindex="-1">
       <router-outlet></router-outlet>
-    </main>
+
 
     <footer class="footer">
       <div class="container footer-content">
@@ -51,4 +50,44 @@
     </footer>
 
   </div>
+
+  <div class="admin-wrapper" *ngIf="isAdminPanel">
+  <!-- Admin Header -->
+  <header class="admin-header" role="banner">
+    <div class="admin-header-content container">
+      <div class="admin-logo" aria-label="Admin Logo">🛠️ <strong>AdminPanel</strong></div>
+      <nav class="admin-nav" role="navigation" aria-label="Admin Navigation">
+        <button class="nav-button" (click)="toggleSidebar()" aria-label="Toggle Sidebar">
+          ☰
+        </button>
+        <div class="admin-actions">
+          <button aria-label="Notifications">🔔</button>
+          <button aria-label="Profile Settings">👤</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="admin-main">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" [class.collapsed]="isSidebarCollapsed" role="complementary">
+      <nav class="sidebar-nav" aria-label="Sidebar Navigation">
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="sidebar-link" tabindex="0">📊 Dashboard</a>
+        <a routerLink="/admin/products" routerLinkActive="active" class="sidebar-link" tabindex="0">📦 Products</a>
+        <a routerLink="/admin/orders" routerLinkActive="active" class="sidebar-link" tabindex="0">📜 Orders</a>
+        <a routerLink="/admin/users" routerLinkActive="active" class="sidebar-link" tabindex="0">👥 Users</a>
+         <a routerLink="/admin/jobs" routerLinkActive="active" class="sidebar-link" tabindex="0">⏰ Scheduler</a>
+        <a routerLink="/admin/settings" routerLinkActive="active" class="sidebar-link" tabindex="0">⚙️ Settings</a>
+        <a (click)="logout()" class="sidebar-link" tabindex="0">🚪 Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Admin Router Outlet -->
+    <main class="admin-content" role="main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+
 </body>

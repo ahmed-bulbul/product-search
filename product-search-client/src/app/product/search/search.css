@@ -79,31 +79,40 @@
   margin-top: 0.5rem;
 }
 
+/* Suggestions dropdown */
 .suggestions-list {
-  max-height: 300px; /* Limit height */
-  overflow-y: auto; /* Scroll vertically when content exceeds height */
-  width: 100%;
-  max-width: 500px; /* Match search bar width */
-  list-style: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  background: #ffffff;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  position: absolute;
-  top: 100%;
-  z-index: 1000;
+    margin-top: 10px;
+    margin-left: 19%;
+    padding: 0;
+    list-style: none;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgb(0 0 0 / 0.1);
+    max-height: 320px;
+    overflow-y: auto;
+    text-align: left;
+    z-index: 1000;
+    position: absolute;
+    width: 64%;
+    left: 0;
 }
 
-
+/* Suggestion items */
 .suggestion-item {
-  padding: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 12px 20px;
   cursor: pointer;
-  transition: background 0.3s;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  outline: none;
 }
 
-.suggestion-item:hover {
-  background-color: #f9fafb;
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item:focus {
+  background-color: #e6f0ff;
 }
 
 .product-name {
@@ -123,6 +132,37 @@
   gap: 1rem;
   color: #4b5563;
 }
+
+
+
+/* Product details inside suggestions */
+.product-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 8px 0;
+}
+
+.product-meta {
+  font-size: 13px;
+  color: #999;
+}
+
+.price {
+  color: #007bff;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.brand {
+  margin-right: 12px;
+}
+
 
 /* Features Section */
 .features-section {

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
-import { Product } from '../models/product';
-
 
 export interface CartItem {
   id: string;
@@ -17,11 +15,22 @@ export class CartService {
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
   cart$ = this.cartSubject.asObservable();
 
-
-  // Add this derived observable
   cartCount$ = this.cart$.pipe(
     map(items => items.reduce((total, item) => total + item.quantity, 0))
   );
+
+  constructor() {
+    const savedCart = localStorage.getItem('cartItems');
+    if (savedCart) {
+      this.items = JSON.parse(savedCart);
+      this.cartSubject.next(this.items);
+    }
+  }
+
+  private updateCartState() {
+    this.cartSubject.next(this.items);
+    localStorage.setItem('cartItems', JSON.stringify(this.items));
+  }
 
   addToCart(item: CartItem) {
     const existing = this.items.find(i => i.id === item.id);
@@ -30,27 +39,28 @@ export class CartService {
     } else {
       this.items.push({ ...item, quantity: 1 });
     }
-    this.cartSubject.next(this.items);
+    this.updateCartState();
   }
 
   removeFromCart(id: string) {
     this.items = this.items.filter(i => i.id !== id);
-    this.cartSubject.next(this.items);
+    this.updateCartState();
   }
 
   updateQuantity(id: string, change: number) {
     const item = this.items.find(i => i.id === id);
     if (item) {
       item.quantity += change;
-      if (item.quantity <= 0) this.removeFromCart(id);
+      if (item.quantity <= 0) {
+        this.removeFromCart(id);
+      } else {
+        this.updateCartState();
+      }
     }
-    this.cartSubject.next(this.items);
   }
 
   clearCart() {
     this.items = [];
-    this.cartSubject.next(this.items);
+    this.updateCartState();
   }
-
-  
 }

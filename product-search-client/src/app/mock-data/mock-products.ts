@@ -17,7 +17,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Track your fitness and health metrics with this smartwatch.',
     price: 149.99,
     rating: 4.7,
-    imageUrl: 'https://via.placeholder.com/200x150?text=Fitness+Watch',
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg',
     brand: { id: 'b2', name: 'FitLife' }
   },
   {
@@ -26,7 +26,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Experience stunning visuals with this 55-inch 4K Smart TV.',
     price: 799.99,
     rating: 4.8,
-    imageUrl: 'https://via.placeholder.com/200x150?text=Smart+TV',
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg',
     brand: { id: 'b3', name: 'VisionTech' }
   },
   {
@@ -35,7 +35,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Compact and powerful speaker for music on the go.',
     price: 39.99,
     rating: 4.3,
-    imageUrl: 'https://via.placeholder.com/200x150?text=Bluetooth+Speaker',
+    imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg',
     brand: { id: 'b1', name: 'SoundMax' }
   },
   {
@@ -44,7 +44,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Fast wireless charger compatible with most smartphones.',
     price: 25.99,
     rating: 4.1,
-    imageUrl: 'https://via.placeholder.com/200x150?text=Charging+Pad',
+ imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg',
     brand: { id: 'b4', name: 'ChargeIt' }
   },
   {
@@ -53,7 +53,7 @@ export const MOCK_PRODUCTS: Product[] = [
     description: 'Powerful gaming laptop with latest graphics card.',
     price: 1199.99,
     rating: 4.6,
-    imageUrl: 'https://via.placeholder.com/200x150?text=Gaming+Laptop',
+   imageUrl: 'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg',
     brand: { id: 'b5', name: 'GamePro' }
   },
   {

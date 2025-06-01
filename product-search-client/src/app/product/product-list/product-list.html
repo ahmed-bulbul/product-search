@@ -34,7 +34,7 @@
       <div class="product-name">{{ product.name }}</div>
       <div class="product-desc">{{ product.description }}</div>
       <div class="product-meta">
-        <span class="price">\${{ product.price.toFixed(2) }}</span>
+        <span class="price">${{ product.price.toFixed(2) }}</span>
         <span class="brand">{{ product.brand.name }}</span>
         <span class="rating">⭐ {{ product.rating }}</span>
       </div>
@@ -75,7 +75,7 @@
         <p class="product-brand">{{ product.brand.name }}</p>
         <p class="product-description">{{ product.description }}</p>
         <div class="product-price-rating">
-          <span class="product-price">\${{ product.price.toFixed(2) }}</span>
+          <span class="product-price">${{ product.price.toFixed(2) }}</span>
           <span [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
             ★ {{ product.rating.toFixed(1) }}
           </span>
