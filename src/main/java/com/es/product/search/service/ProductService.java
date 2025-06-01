@@ -1,80 +1,80 @@
 package com.es.product.search.service;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import com.es.product.search.model.Product;
+
+import com.es.product.search.dto.ProductDto;
+import com.es.product.search.models.Brand;
+import com.es.product.search.models.Category;
+import com.es.product.search.models.Product;
+import com.es.product.search.respository.BrandRepository;
+import com.es.product.search.respository.CategoryRepository;
 import com.es.product.search.respository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
-
-    private final ElasticsearchClient elasticsearchClient;
+public class ProductService implements BaseService<Product> {
 
     private final ProductRepository productRepository;
+    private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
 
+    @Override
+    public Product save(Product entity) {
+        // Brand lookup
+        Brand brand = brandRepository.findByName(entity.getBrand().getName())
+                .orElseThrow(() -> new IllegalArgumentException("Brand not found: " + entity.getBrand().getName()));
+        entity.setBrand(brand);
 
-    public List<Product> searchByName(String name) throws IOException {
-        if (name == null || name.isBlank()) {
-            return Collections.emptyList();
-        }
+        // Category lookup
+        Category category = categoryRepository.findByName(entity.getCategory().getName())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + entity.getCategory().getName()));
+        entity.setCategory(category);
 
-        int size = 10; // max 10 results
+        return productRepository.save(entity);
+    }
 
-        SearchRequest searchRequest = SearchRequest.of(sr -> sr
-                .index("products")
-                .query(q -> q
-                        .bool(b -> b
-                                .should(sh -> sh
-                                        .matchPhrasePrefix(mpp -> mpp
-                                                .field("name")
-                                                .query(name)
-                                        )
-                                )
-                                .should(sh -> sh
-                                        .match(m -> m
-                                                .field("name")
-                                                .query(name)
-                                        )
-                                )
-                                .minimumShouldMatch("1")
-                        )
-                )
-                .size(size)
+    @Override
+    public Optional<Product> findById(UUID id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public List<Product> findAll(Predicate<Product> filter) {
+        return productRepository.findAll().stream().filter(filter).toList();
+    }
+
+    @Override
+    public Page<Product> findAllPaginated(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         );
-
-
-
-        // Consider using a logger here instead of System.out.println
-        System.out.println("Elasticsearch search request: " + searchRequest);
-
-        SearchResponse<Product> response = elasticsearchClient.search(searchRequest, Product.class);
-
-        return response.hits().hits().stream()
-                .map(Hit::source)
-                .toList();
     }
 
-    public Page<Product> getAll(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    @Override
+    public void update(UUID id, Consumer<Product> updater) {
+        productRepository.findById(id).ifPresent(product -> {
+            updater.accept(product);
+            productRepository.save(product);
+        });
     }
 
-    public void saveAll(List<Product> products) {
-        productRepository.saveAll(products);
+    @Override
+    public List<String> mapAll(Function<Product, String> mapper) {
+        return productRepository.findAll().stream().map(mapper).toList();
     }
 
-    public long count() {
-        return productRepository.count();
+    @Override
+    public void delete(UUID id) {
+        productRepository.deleteById(id);
     }
-
 }

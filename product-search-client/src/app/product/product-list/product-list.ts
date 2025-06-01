@@ -17,7 +17,7 @@ import { CartService } from '../../service/cart-service';
 export class ProductList  implements OnInit{
   products: Product[] = [];
   displayedProducts: Product[] = [];
-  cartItems: any[] = []; 
+  cartItems: any[] = [];
 
   currentPage = 1;
   pageSize = 6;
@@ -28,10 +28,10 @@ export class ProductList  implements OnInit{
   searchText = '';
   results: Product[] = [];
   selectedIndex = -1; // for keyboard nav if you want
-  
+
   private searchSubject = new Subject<string>();
 
-  constructor(private productService: ProductService,private cartService: CartService) {}
+  constructor(private productIndexService: ProductService,private cartService: CartService) {}
 
   ngOnInit() {
     this.loadProducts();
@@ -40,7 +40,7 @@ export class ProductList  implements OnInit{
           debounceTime(300),
           switchMap(query => {
             this.loading = true;
-            return this.productService.search(query);
+            return this.productIndexService.search(query);
           })
         ).subscribe(products => {
           this.results = products;
@@ -54,7 +54,7 @@ export class ProductList  implements OnInit{
 
   console.log('is loading'+this.loading)
 
-  
+
     this.products = MOCK_PRODUCTS;
     console.log('Loaded products:', this.products);
 
@@ -62,7 +62,7 @@ export class ProductList  implements OnInit{
 
     this.setPage(1); // ✅ Call after products are set
     this.loading = false;
-  
+
 }
 
   setPage(page: number) {
@@ -119,7 +119,7 @@ export class ProductList  implements OnInit{
     alert(this.searchText)
   }
 
-  
+
 
 addedProductIds = new Set<string>();
 

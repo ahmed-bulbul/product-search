@@ -20,14 +20,14 @@ export class Search {
 
   private searchSubject = new Subject<string>();
 
-  constructor(private productService: ProductService) {}
+  constructor(private productIndexService: ProductService) {}
 
   ngOnInit() {
     this.searchSubject.pipe(
       debounceTime(300),
       switchMap(query => {
         this.loading = true;
-        return this.productService.search(query);
+        return this.productIndexService.search(query);
       })
     ).subscribe(products => {
       this.results = products;

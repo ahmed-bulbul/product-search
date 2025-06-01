@@ -1,36 +1,53 @@
 package com.es.product.search.controller;
 
 
-import com.es.product.search.model.Product;
+import com.es.product.search.dto.ProductDto;
+import com.es.product.search.mapper.ProductMapper;
 import com.es.product.search.service.ProductService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.es.product.search.utils.PageResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
-
+import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductService productService;
+    private final ProductMapper mapper;
 
-    public ProductController(ProductService productService) {
-        this.service = productService;
+    @PostMapping
+    public ResponseEntity<ProductDto> create(@RequestBody ProductDto dto) {
+        var saved = productService.save(mapper.toEntity(dto));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.toDto(saved));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable UUID id, @RequestBody ProductDto dto) {
+        productService.update(id, product -> mapper.updateEntityFromDto(dto, product));
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
 
     @GetMapping
-    public Page<Product> getAll(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "10") int size) {
-        return service.getAll(PageRequest.of(page, size));
+    public ResponseEntity<PageResponse<ProductDto>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        var paged = productService.findAllPaginated(page, size);
+        return ResponseEntity.ok(mapper.toPageResponse(paged));
     }
 
-    @GetMapping("/search")
-    public List<Product> search(@RequestParam String name) throws IOException {
-        return service.searchByName(name);
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 }
