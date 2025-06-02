@@ -6,6 +6,7 @@ import { ContactComponent } from './contact/contact-component/contact-component'
 import { DashboardComponent } from './admin/dashboard-component/dashboard-component';
 import { SchedulerComponent } from './admin/scheduler-component/scheduler-component';
 import { SchedulerListComponent } from './admin/scheduler-list-component/scheduler-list-component';
+import { ProductDetailsComponent } from './product/product-details-component/product-details-component';
 
 export const routes: Routes = [
 
@@ -16,5 +17,6 @@ export const routes: Routes = [
       {path:'admin/dashboard',component:DashboardComponent},
       {path:'admin/jobs/create',component:SchedulerComponent},
       {path:'admin/jobs',component:SchedulerListComponent},
+      {path:'products/:id',component:ProductDetailsComponent}
 ];
 

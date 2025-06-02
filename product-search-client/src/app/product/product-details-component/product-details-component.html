@@ -1,0 +1,82 @@
+
+
+<div *ngIf="product$ | async as product" class="product-details-container" style="padding-top: 100px;">
+  
+    <div class="product-gallery" >
+  <img *ngIf="product.images && product.images.length > 0"
+    [src]="product.images[0]"
+    alt="{{ product.name }}"
+    class="product-main-image" 
+  />
+
+  <div class="thumbnail-list" *ngIf="product.images && product.images.length > 1">
+    <img
+  *ngFor="let img of product.images"
+  [src]="img"
+  alt="{{ product.name }} image"
+  class="thumbnail"
+
+/>
+
+  </div>
+</div>
+
+
+  <div class="product-info">
+    <h1 class="product-title">{{ product.name }}</h1>
+    
+    <div class="product-rating">
+      <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+        <i 
+          class="star" 
+          [class.filled]=" product.rating"
+          aria-hidden="true"
+        >★</i>
+      </ng-container>
+      <span class="rating-value">{{ product.rating }}/5</span>
+    </div>
+
+    <div class="product-price">${{ product.price.toFixed(2) }}</div>
+
+    <div class="quantity-selector" aria-label="Select quantity">
+      <button aria-label="Decrease quantity" (click)="changeQuantity(-1)" [disabled]="quantity <= 1">-</button>
+      <input 
+        type="number" 
+        [value]="quantity" 
+        min="1" 
+        (input)="quantity = $any($event.target).valueAsNumber || 1" 
+        aria-live="polite"
+      />
+      <button aria-label="Increase quantity" (click)="changeQuantity(1)">+</button>
+    </div>
+
+    <div class="action-buttons" style="padding-top: 40px;">
+      <button (click)="addToCart(product)" class="btn btn-primary">Add to Cart</button>
+      <button (click)="buyNow(product)" class="btn btn-secondary">Buy Now</button>
+    </div>
+
+    <nav class="product-tabs" role="tablist" aria-label="Product details tabs">
+      <button 
+        role="tab" 
+        [attr.aria-selected]="activeTab === 'desc'" 
+        (click)="setTab('desc')" 
+        [class.active]="activeTab === 'desc'"
+      >Description</button>
+      <button 
+        role="tab" 
+        [attr.aria-selected]="activeTab === 'reviews'" 
+        (click)="setTab('reviews')" 
+        [class.active]="activeTab === 'reviews'"
+      >Reviews</button>
+    </nav>
+
+    <section *ngIf="activeTab === 'desc'" role="tabpanel">
+      <p class="product-description">{{ product.description }}</p>
+    </section>
+
+    <section *ngIf="activeTab === 'reviews'" role="tabpanel" class="reviews-section">
+      <!-- Placeholder for reviews -->
+      <p>No reviews yet. Be the first to review this product!</p>
+    </section>
+  </div>
+</div>

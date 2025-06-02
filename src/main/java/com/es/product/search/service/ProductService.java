@@ -45,8 +45,8 @@ public class ProductService implements BaseService<Product> {
     }
 
     @Override
-    public Optional<Product> findById(UUID id) {
-        return productRepository.findById(id);
+    public Product findById(UUID id) {
+        return productRepository.findById(id).orElse(null);
     }
 
     @Override

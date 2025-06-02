@@ -28,6 +28,11 @@ public class ProductController {
                 .body(mapper.toDto(saved));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(mapper.toDto(productService.findById(id)));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable UUID id, @RequestBody ProductDto dto) {
         productService.update(id, product -> mapper.updateEntityFromDto(dto, product));

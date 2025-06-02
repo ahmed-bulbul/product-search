@@ -27,6 +27,10 @@ export class ProductService {
     return this.http.get<PageResponse<Product>>(this.baseUrl, { params });
   }
 
+  findById(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/${id}`);
+  }
+
   /**
    * Mock brand list
    */

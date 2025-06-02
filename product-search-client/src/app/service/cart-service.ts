@@ -49,6 +49,7 @@ export class CartService {
 
   updateQuantity(id: string, change: number) {
     const item = this.items.find(i => i.id === id);
+    console.log('product ud ', id);
     if (item) {
       item.quantity += change;
       if (item.quantity <= 0) {

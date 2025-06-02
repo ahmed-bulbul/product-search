@@ -6,6 +6,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import { ProductService } from '../../service/product-service';
 import { CartService } from '../../service/cart-service';
 import { Product, PageResponse } from '../../models/product';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -39,7 +40,8 @@ export class ProductList implements OnInit {
 
   constructor(
     private productIndexService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -116,7 +118,7 @@ export class ProductList implements OnInit {
   }
 
   productDetails(id: string) {
-    alert('product details ' + id);
+    this.router.navigate(['/products/', id]);
   }
 
   performSearch() {

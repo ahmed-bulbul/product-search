@@ -13,10 +13,8 @@
     aria-haspopup="listbox"
   />
 
-  <!-- Spinner loader -->
   <div *ngIf="loading$ | async" class="spinner" aria-label="Loading results"></div>
 
-  <!-- Suggestions -->
   <ul
     *ngIf="results.length"
     class="suggestions-list"
@@ -36,13 +34,11 @@
       <div class="product-desc">{{ product.description }}</div>
       <div class="product-meta">
         <span class="price">${{ product.price.toFixed(2) }}</span>
-        <!-- <span class="brand">{{ product.brand }}</span> -->
         <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
       </div>
     </li>
   </ul>
 
-  <!-- Two promo panels container -->
   <div class="promo-panels-container">
     <div class="promo-panel">
       <h3>🔥 Limited Time Offer!</h3>
@@ -50,12 +46,10 @@
       <div class="countdown-timer" id="campaign-timer-1">00:10:00</div>
       <button class="shop-now-btn">Shop Now</button>
     </div>
-
   </div>
 </div>
 
 <div class="product-list-container">
-  <h2>Our Products</h2>
 
   <div *ngIf="loading$ | async" class="loading">Loading products...</div>
 
@@ -83,10 +77,7 @@
         <p class="product-description">{{ product.description }}</p>
         <div class="product-price-rating">
           <span class="product-price">${{ product.price.toFixed(2) }}</span>
-          <span
-            *ngIf="product.rating"
-            [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'"
-          >
+          <span *ngIf="product.rating" [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
             ★ {{ getRatingAsNumber(product.rating).toFixed(1) }}
           </span>
         </div>
@@ -97,30 +88,16 @@
           ➕ Add to Cart
         </button>
 
-        <div
-          *ngIf="addedProductIds.has(product.id)"
-          class="added-confirmation"
-          role="alert"
-          aria-live="polite"
-        >
+        <div *ngIf="addedProductIds.has(product.id)" class="added-confirmation" role="alert" aria-live="polite">
           <span class="check-icon-text">✔️</span> Added to Cart
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Pagination using pageInfo$ observable -->
   <ng-container *ngIf="pageInfo$ | async as pageInfo">
-    <nav
-      class="pagination"
-      aria-label="Product pagination"
-      *ngIf="pageInfo.totalPages > 1"
-    >
-      <button
-        (click)="prevPage()"
-        [disabled]="pageInfo.currentPage === 0"
-        aria-label="Previous page"
-      >
+    <nav class="pagination" aria-label="Product pagination" *ngIf="pageInfo.totalPages > 1">
+      <button (click)="prevPage()" [disabled]="pageInfo.currentPage === 0" aria-label="Previous page">
         &laquo; Prev
       </button>
 
@@ -133,11 +110,7 @@
         {{ i + 1 }}
       </button>
 
-      <button
-        (click)="nextPage()"
-        [disabled]="pageInfo.currentPage === pageInfo.totalPages - 1"
-        aria-label="Next page"
-      >
+      <button (click)="nextPage()" [disabled]="pageInfo.currentPage === pageInfo.totalPages - 1" aria-label="Next page">
         Next &raquo;
       </button>
     </nav>

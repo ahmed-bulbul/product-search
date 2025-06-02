@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public interface BaseService<T> {
     T save(T entity);
-    Optional<T> findById(UUID id);
+    T findById(UUID id);
     List<T> findAll(Predicate<T> filter);
     Page<T> findAllPaginated(int page, int size);
     void update(UUID id, Consumer<T> updater);

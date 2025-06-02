@@ -257,3 +257,13 @@ a:focus {
   background-color: #f9fafb;
   overflow-y: auto;
 }
+
+
+.footer {
+  flex-shrink: 0; /* don’t shrink */
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 14px;
+}
