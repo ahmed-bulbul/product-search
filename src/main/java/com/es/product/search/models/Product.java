@@ -6,6 +6,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import jakarta.persistence.*;
@@ -27,6 +29,8 @@ public class Product extends BaseEntity {
     private String size;
     private String color;
     private String model;
+    private String rating;
+    private Set<String> images = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")

@@ -13,7 +13,7 @@
       <img [src]="item.imageUrl" [alt]="item.name" class="cart-item-image" />
       <div class="cart-item-details">
         <span class="cart-item-name" [title]="item.name">{{ item.name }}</span>
-        <span class="cart-item-price">\${{ item.price.toFixed(2) }}</span>
+        <span class="cart-item-price">${{ item.price.toFixed(2) }}</span>
         <div class="cart-item-qty" aria-label="Quantity controls">
           <button (click)="changeQty(item.id, -1)" aria-label="Decrease quantity">−</button>
           <span>{{ item.quantity }}</span>

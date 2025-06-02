@@ -3,12 +3,25 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  rating: number;
-  imageUrl: string;
-  brand: Brand;
+  sku: string | null;
+  quantity: number | null;
+  size: string | null;
+  color: string | null;
+  model: string | null;
+  rating: string | null;
+  images: string[] | null;
+  brand: string; // API shows brand is a string, not an object
+  category: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  active?: boolean;
+  imageUrl?: string; // Keep for compatibility with cart service
 }
 
-export interface Brand {
-  id: string;
-  name: string;
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }

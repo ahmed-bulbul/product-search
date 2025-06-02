@@ -14,6 +14,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -119,7 +120,7 @@ public class DataLoader implements ApplicationRunner {
             System.out.println("No products found, loading demo data.");
             loadDemoData();
         }else{
-            //delete all products
+//            //delete all products
 //            productRepository.deleteAll();
 //            brandRepository.deleteAll();
 //            categoryRepository.deleteAll();
@@ -132,38 +133,52 @@ public class DataLoader implements ApplicationRunner {
 
 
 
-        List<ProductIndex> products = new ArrayList<>();
-
-        int productCount = 0;
-        for (String brandName : brands) {
-            for (String type : productTypes) {
-                for (int i = 1; i <= 10; i++) {  // 10 * 10 * 10 = 1000 products
-                    if (productCount >= 1000) break;
-
-                    ProductIndex.Brand brand = new ProductIndex.Brand(
-                            "brand" + (brands.indexOf(brandName) + 1),
-                            brandName
-                    );
-
-                    ProductIndex p = new ProductIndex();
-                    p.setId(UUID.randomUUID());
-                    p.setSku("sku-" + (productCount + 1));
-                    p.setImageUrl("https://via.placeholder.com/150");
-                    p.setName(brandName + " " + type + " " + i);
-                    p.setDescription("Description for " + brandName + " " + type + " " + i);
-                    p.setRating((float) (Math.random() * 5));
-                    p.setPrice(Math.random() * 1000);
-                    p.setBrand(brand);
-
-                    products.add(p);
-                    productCount++;
-                }
-                if (productCount >= 1000) break;
-            }
-            if (productCount >= 1000) break;
-        }
-
-        productIndexService.saveAll(products);
-        System.out.println("Inserted " + productCount + " meaningful sample products.");
+//        List<ProductIndex> products = new ArrayList<>();
+//
+//        int productCount = 0;
+//        for (String brandName : brands) {
+//            for (String type : productTypes) {
+//                for (int i = 1; i <= 10; i++) {  // 10 * 10 * 10 = 1000 products
+//                    if (productCount >= 1000) break;
+//
+//                    ProductIndex.Brand brand = new ProductIndex.Brand(
+//                            "brand" + (brands.indexOf(brandName) + 1),
+//                            brandName
+//                    );
+//
+//                    ProductIndex p = new ProductIndex();
+//                    p.setId(UUID.randomUUID());
+//                    p.setSku("sku-" + (productCount + 1));
+//                    p.setImages(new ArrayList<>());
+//                    p.setName(brandName + " " + type + " " + i);
+//                    p.setDescription("Description for " + brandName + " " + type + " " + i);
+//                    p.setRating("4.5");
+//                    p.setPrice(BigDecimal.valueOf(Math.random() * 1000));
+//                    p.setBrand(brand);
+//                    p.setCategory(new ProductIndex.Category(
+//                            "category" + (int) Math.round(Math.random() * 100),
+//                            "Category " + (int) Math.round(Math.random() * 100)
+//                    ));
+//                    p.setQuantity((int) Math.round(Math.random() * 100));
+//                    p.setSize("size" + (int) Math.round(Math.random() * 100));
+//                    p.setColor("color" + (int) Math.round(Math.random() * 100));
+//                    p.setModel("model" + (int) Math.round(Math.random() * 100));
+//                    p.setCategory(new ProductIndex.Category(
+//                            "category" + (int) Math.round(Math.random() * 100),
+//                            "Category " + (int) Math.round(Math.random() * 100)
+//                    ));
+//                    p.setCreatedAt(Instant.now());
+//                    p.setUpdatedAt(Instant.now());
+//
+//                    products.add(p);
+//                    productCount++;
+//                }
+//                if (productCount >= 1000) break;
+//            }
+//            if (productCount >= 1000) break;
+//        }
+//
+//        productIndexService.saveAll(products);
+      //  System.out.println("Inserted " + productCount + " meaningful sample products.");
     }
 }

@@ -1,4 +1,4 @@
-<div class="search-container with-icon" style="margin-top: 10px;">
+<div class="search-container with-icon" style="margin-top: 15px; position: relative;">
   <input
     type="text"
     placeholder="Search for products..."
@@ -10,11 +10,11 @@
     role="combobox"
     aria-autocomplete="list"
     aria-controls="suggestions-list"
+    aria-haspopup="listbox"
   />
-  <span class="search-icon" aria-hidden="true">🔍</span>
 
   <!-- Spinner loader -->
-  <div *ngIf="loading" class="spinner" aria-label="Loading results"></div>
+  <div *ngIf="loading$ | async" class="spinner" aria-label="Loading results"></div>
 
   <!-- Suggestions -->
   <ul
@@ -30,91 +30,116 @@
       role="option"
       tabindex="0"
       [attr.aria-selected]="i === selectedIndex"
+      (click)="getProduct(product.name)"
     >
       <div class="product-name">{{ product.name }}</div>
       <div class="product-desc">{{ product.description }}</div>
       <div class="product-meta">
         <span class="price">${{ product.price.toFixed(2) }}</span>
-        <span class="brand">{{ product.brand.name }}</span>
-        <span class="rating">⭐ {{ product.rating }}</span>
+        <!-- <span class="brand">{{ product.brand }}</span> -->
+        <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
       </div>
-      
-
     </li>
   </ul>
+
+  <!-- Two promo panels container -->
+  <div class="promo-panels-container">
+    <div class="promo-panel">
+      <h3>🔥 Limited Time Offer!</h3>
+      <p>Get up to <strong>50% OFF</strong> on select products.</p>
+      <div class="countdown-timer" id="campaign-timer-1">00:10:00</div>
+      <button class="shop-now-btn">Shop Now</button>
+    </div>
+
+  </div>
 </div>
 
 <div class="product-list-container">
   <h2>Our Products</h2>
 
-  <!-- <pre>{{ displayedProducts | json }}</pre> -->
+  <div *ngIf="loading$ | async" class="loading">Loading products...</div>
 
-
-  <div *ngIf="loading" class="loading">Loading products...</div>
-
-  <div *ngIf="!loading && displayedProducts.length === 0" class="no-results">
+  <div *ngIf="!(loading$ | async) && (products$ | async)?.length === 0" class="no-results">
     No products found.
   </div>
 
-  <div class="products-grid" *ngIf="displayedProducts.length > 0">
- 
+  <div class="products-grid" *ngIf="products$ | async as displayedProducts">
     <div
       class="product-card"
-      *ngFor="let product of displayedProducts;"
+      *ngFor="let product of displayedProducts; trackBy: trackById"
       tabindex="0"
       (click)="productDetails(product.id)"
     >
       <img
-        [src]="product.imageUrl"
+        [src]="product.images?.[0] || 'assets/images/placeholder.jpg'"
         [alt]="product.name"
         class="product-image"
         loading="lazy"
       />
+
       <div class="product-info">
         <h3 class="product-name" title="{{ product.name }}">{{ product.name }}</h3>
-        <p class="product-brand">{{ product.brand.name }}</p>
+        <p class="product-brand">{{ product.brand }}</p>
         <p class="product-description">{{ product.description }}</p>
         <div class="product-price-rating">
           <span class="product-price">${{ product.price.toFixed(2) }}</span>
-          <span [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
-            ★ {{ product.rating.toFixed(1) }}
+          <span
+            *ngIf="product.rating"
+            [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'"
+          >
+            ★ {{ getRatingAsNumber(product.rating).toFixed(1) }}
           </span>
         </div>
-
-    
       </div>
 
-      <div class="cart-action" style="margin-top: 15px;">
-        <button (click)="addToCart(product); $event.stopPropagation()">
-        ➕ Add to Cart
-      </button>
-      &nbsp; &nbsp;
-      <div *ngIf="addedProductIds.has(product.id)" class="added-confirmation" role="alert" aria-live="polite">
-        <span class="check-icon">✔️</span> Added to Cart
+      <div class="cart-action">
+        <button (click)="addToCart(product); $event.stopPropagation()" class="add-to-cart-btn">
+          ➕ Add to Cart
+        </button>
+
+        <div
+          *ngIf="addedProductIds.has(product.id)"
+          class="added-confirmation"
+          role="alert"
+          aria-live="polite"
+        >
+          <span class="check-icon-text">✔️</span> Added to Cart
+        </div>
       </div>
     </div>
   </div>
 
-  <nav class="pagination" aria-label="Product pagination" *ngIf="totalPages > 1">
-    <button (click)="prevPage()" [disabled]="currentPage === 1" aria-label="Previous page">
-      &laquo; Prev
-    </button>
-
-    <button
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      [class.active]="currentPage === i + 1"
-      (click)="setPage(i + 1)"
-      [attr.aria-current]="currentPage === i + 1 ? 'page' : null"
+  <!-- Pagination using pageInfo$ observable -->
+  <ng-container *ngIf="pageInfo$ | async as pageInfo">
+    <nav
+      class="pagination"
+      aria-label="Product pagination"
+      *ngIf="pageInfo.totalPages > 1"
     >
-      {{ i + 1 }}
-    </button>
+      <button
+        (click)="prevPage()"
+        [disabled]="pageInfo.currentPage === 0"
+        aria-label="Previous page"
+      >
+        &laquo; Prev
+      </button>
 
-    <button
-      (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
-      aria-label="Next page"
-    >
-      Next &raquo;
-    </button>
-  </nav>
+      <button
+        *ngFor="let p of getPageArray(); let i = index"
+        [class.active]="pageInfo.currentPage === i"
+        (click)="setPage(i + 1)"
+        [attr.aria-current]="pageInfo.currentPage === i ? 'page' : null"
+      >
+        {{ i + 1 }}
+      </button>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="pageInfo.currentPage === pageInfo.totalPages - 1"
+        aria-label="Next page"
+      >
+        Next &raquo;
+      </button>
+    </nav>
+  </ng-container>
 </div>

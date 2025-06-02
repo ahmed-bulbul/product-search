@@ -1,0 +1,32 @@
+<div class="table-container">
+
+  <!-- Create Task Button -->
+  <button type="button" class="btn btn-secondary">
+    <a routerLink="/admin/jobs/create" routerLinkActive="active" style="color: white;">Create Task</a>
+  </button>
+
+  &nbsp;
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Group</th>
+        <th>Cron Expression</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasks$ | async">
+        <td>{{ task.id }}</td>
+        <td>{{ task.name }}</td>
+        <td>{{ task.group }}</td>
+        <td>{{ task.cronExpression }}</td>
+        <td>
+          <button class="delete" (click)="deleteJob(task.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

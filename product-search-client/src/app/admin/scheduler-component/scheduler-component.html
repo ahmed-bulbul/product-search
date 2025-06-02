@@ -1,1 +1,39 @@
-<p>scheduler-component works!</p>
+<div class="form-container">
+  <h2>Create New Task</h2>
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Task Name</label>
+      <input type="text" id="name" [(ngModel)]="task.name" name="name" required />
+    </div>
+
+    <div class="form-group">
+      <label for="group">Group</label>
+      <!-- Select group static options -->
+      <select id="group" [(ngModel)]="task.group" name="group" required>
+        <option value="">Select Group</option>
+        <option value="product">product</option>
+        <option value="PROMO">Promo</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="cron">Cron Expression</label>
+      <input type="text" id="cron" [(ngModel)]="task.cronExpression" name="cronExpression" required placeholder="e.g. 0/30 * * * * ?" />
+    </div>
+
+     <!-- Trigger day -->
+    <div class="form-group">
+      <label for="triggerDay">Trigger Day</label>
+      <input type="number" id="triggerDay" [(ngModel)]="task.triggerDay" name="triggerDay" required />
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" [(ngModel)]="task.description" name="description"></textarea>
+    </div>
+
+    <button type="submit" class="submit-button">Create Task</button>
+  </form>
+</div>

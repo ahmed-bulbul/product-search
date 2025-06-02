@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -22,8 +23,10 @@ public class ProductDto {
     private String size;
     private String color;
     private String model;
-    private String brand;      // brand name
-    private String category;   // category name
+    private String rating;
+    private Set<String> images;
+    private String brand;     // Brand name only
+    private String category;  // Category name only
     private Instant createdAt;
     private Instant updatedAt;
     private boolean active;

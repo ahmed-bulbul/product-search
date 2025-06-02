@@ -5,6 +5,7 @@ import { CheckoutComponent } from './cart/checkout-component/checkout-component'
 import { ContactComponent } from './contact/contact-component/contact-component';
 import { DashboardComponent } from './admin/dashboard-component/dashboard-component';
 import { SchedulerComponent } from './admin/scheduler-component/scheduler-component';
+import { SchedulerListComponent } from './admin/scheduler-list-component/scheduler-list-component';
 
 export const routes: Routes = [
 
@@ -13,6 +14,7 @@ export const routes: Routes = [
       {path:'checkout',component:CheckoutComponent},
       {path:'contact',component:ContactComponent},
       {path:'admin/dashboard',component:DashboardComponent},
-      {path:'admin/jobs',component:SchedulerComponent},
+      {path:'admin/jobs/create',component:SchedulerComponent},
+      {path:'admin/jobs',component:SchedulerListComponent},
 ];
 

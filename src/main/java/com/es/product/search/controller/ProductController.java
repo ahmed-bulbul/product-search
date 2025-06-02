@@ -38,7 +38,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "100") int size
     ) {
         var paged = productService.findAllPaginated(page, size);
         return ResponseEntity.ok(mapper.toPageResponse(paged));
