@@ -23,7 +23,7 @@ export class ProductDetailsComponent implements OnInit {
     description: '',
     price: 0,
     images: [] ,
-    rating: ''
+    rating: 0,
   }
 
   loading = true;
@@ -35,6 +35,7 @@ export class ProductDetailsComponent implements OnInit {
 
   // Observable for template or other consumers
   product$ = this.productSubject.asObservable();
+Math: any;
 
   constructor(private productService: ProductService, private route: ActivatedRoute, private cartService: CartService,) {
      this.cartService.cart$.subscribe(items => this.cartItems = items);

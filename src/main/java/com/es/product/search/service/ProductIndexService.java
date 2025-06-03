@@ -98,4 +98,8 @@ public class ProductIndexService {
 
         save(productIndex);
     }
+
+    public Page<ProductIndex> findByCategory(String category,Pageable pageable) {
+        return productIndexRepository.findByCategory_Name(category,pageable);
+    }
 }

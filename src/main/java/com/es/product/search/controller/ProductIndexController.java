@@ -8,6 +8,7 @@ import com.es.product.search.service.ProductIndexService;
 import com.es.product.search.utils.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,17 @@ public class ProductIndexController {
     @GetMapping("/{id}")
     public ProductIndex getById(@PathVariable String id) {
         return service.findById(UUID.fromString(id));
+    }
+
+    @GetMapping("/category")
+    ResponseEntity<PageResponse<ProductDto>>  searchByCategory(
+            @RequestParam String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductIndex> paged = service.findByCategory(category, pageable);
+        return ResponseEntity.ok(mapper.toPageResponseIndex(paged));
     }
 
 

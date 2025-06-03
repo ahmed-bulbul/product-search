@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { PageResponse, Product } from '../models/product';
+import { Category, PageResponse, Product } from '../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,7 @@ import { PageResponse, Product } from '../models/product';
 export class ProductService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:8080/api/v1/productIndex';
+  private categoryUrl = 'http://localhost:8080/api/v1/categories';
 
   search(query: string): Observable<Product[]> {
     if (!query?.trim()) {
@@ -36,5 +37,12 @@ export class ProductService {
    */
   getBrands(): Observable<string[]> {
     return of(['Apple', 'Samsung', 'Google']);
+  }
+
+  /**
+   * Mock category list
+   */
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.categoryUrl);
   }
 }

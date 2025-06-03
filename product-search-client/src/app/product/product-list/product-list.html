@@ -51,6 +51,14 @@
   </div>
 </div>
 
+<!-- shows all categories -->
+
+<div class="categories-container">
+  <button *ngFor="let cat of categories" class="category-btn">
+    {{ cat.name }}
+  </button>
+</div>
+
 <div class="product-list-container">
 
   <div *ngIf="loading$ | async" class="loading">Loading products...</div>

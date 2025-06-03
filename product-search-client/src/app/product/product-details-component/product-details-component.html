@@ -25,16 +25,18 @@
   <div class="product-info">
     <h1 class="product-title">{{ product.name }}</h1>
     
-    <div class="product-rating">
-      <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
-        <i 
-          class="star" 
-          [class.filled]=" product.rating"
-          aria-hidden="true"
-        >★</i>
-      </ng-container>
-      <span class="rating-value">{{ product.rating }}/5</span>
-    </div>
+ <div class="product-rating" *ngIf="product">
+  <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+    <i 
+      class="star" 
+      [class.filled]="product?.rating!"
+      aria-hidden="true"
+    >★</i>
+  </ng-container>
+  <span class="rating-value">{{ +product?.rating! }}/5</span>
+</div>
+
+
 
     <div class="product-price">${{ product.price.toFixed(2) }}</div>
 

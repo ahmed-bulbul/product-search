@@ -25,3 +25,12 @@ export interface PageResponse<T> {
   totalElements: number;
   totalPages: number;
 }
+
+export interface Category{
+  id: string;
+  name: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+  active?: boolean;
+}

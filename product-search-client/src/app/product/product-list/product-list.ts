@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ProductService } from '../../service/product-service';
 import { CartService } from '../../service/cart-service';
-import { Product, PageResponse } from '../../models/product';
+import { Product, PageResponse, Category } from '../../models/product';
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,13 +35,17 @@ export class ProductList implements OnInit {
   selectedIndex = -1;
   private searchSubject = new Subject<string>();
   addedProductIds = new Set<string>();
+  
+  // Mock category list
+  categories: Category[] = [];
 
   
 
   constructor(
     private productIndexService: ProductService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
@@ -58,9 +62,13 @@ export class ProductList implements OnInit {
       this.loadingSubject.next(false);
       this.selectedIndex = -1;
     });
+
+    this.productService.getCategories().subscribe(categories => {
+      this.categories = categories;
+    });
   }
 
-  loadPage(pageNumber: number, size: number = 100) {
+  loadPage(pageNumber: number, size: number = 50) {
     console.log('Loading page ' + pageNumber);
     this.loadingSubject.next(true);
     
@@ -142,6 +150,7 @@ export class ProductList implements OnInit {
   
   // Helper method to convert string rating to number
   getRatingAsNumber(rating: string | null): number {
+    console.log('rating', rating);
     return rating ? parseFloat(rating) : 0;
   }
 
@@ -151,6 +160,12 @@ export class ProductList implements OnInit {
 
 getProduct(id:string){
   this.router.navigate(['/products/', id]);
+}
+
+loadCategories() {
+  this.productService.getCategories().subscribe(categories => {
+    this.categories = categories;
+  });
 }
 
 
