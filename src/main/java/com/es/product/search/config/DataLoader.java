@@ -4,8 +4,10 @@ import com.es.product.search.index.ProductIndex;
 import com.es.product.search.models.Brand;
 import com.es.product.search.models.Category;
 import com.es.product.search.models.Product;
+import com.es.product.search.models.ProductImage;
 import com.es.product.search.respository.BrandRepository;
 import com.es.product.search.respository.CategoryRepository;
+import com.es.product.search.respository.ProductImageRepository;
 import com.es.product.search.respository.ProductRepository;
 import com.es.product.search.service.ProductIndexService;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +29,7 @@ public class DataLoader implements ApplicationRunner {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
     private final Random random = new Random();
 
@@ -85,7 +85,7 @@ public class DataLoader implements ApplicationRunner {
             String model = MODEL_NAMES.get(random.nextInt(MODEL_NAMES.size()));
             String productName = brand.getName() + " " + prefix + " " + model;
 
-            products.add(Product.builder()
+            Product product = Product.builder()
                     .name(productName)
                     .description("High-quality " + category.getName().toLowerCase() + " from " + brand.getName())
                     .sku("SKU-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
@@ -96,7 +96,17 @@ public class DataLoader implements ApplicationRunner {
                     .color(String.valueOf(random.nextInt(100) + 1))
                     .size(String.valueOf(random.nextInt(100) + 1))
                     .category(category)
-                    .build());
+                    .build();
+
+            ProductImage productImage = ProductImage.builder()
+                    .url("https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg")
+                    .description(productName)
+                    .product(product)
+                    .build();
+
+            product.getImages().add(productImage);
+
+            products.add(product);
         }
 
         productRepository.saveAll(products);
@@ -115,6 +125,13 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+//        if(1==1){
+//            productRepository.deleteAll();
+//            brandRepository.deleteAll();
+//            categoryRepository.deleteAll();
+//            return;
+//        }
 
         if (productRepository.count() == 0) {
             System.out.println("No products found, loading demo data.");

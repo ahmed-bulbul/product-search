@@ -57,11 +57,11 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   changeQuantity(delta: number) {
-    const id = this.route.snapshot.paramMap.get('id');
+    
     const newQuantity = this.quantity + delta;
     if (newQuantity > 0) {
       this.quantity = newQuantity;
-      this.cartService.updateQuantity(id!, this.quantity);
+      //this.cartService.updateQuantity(id!, this.quantity);
     }
 
     
@@ -73,6 +73,7 @@ export class ProductDetailsComponent implements OnInit {
 
   addToCart(product: Product | null) {
     console.log('quantity', this.quantity);
+    const id = this.route.snapshot.paramMap.get('id');
     if (product) {
       console.log(`Add to cart: ${product.name} x${this.quantity}`);
       // Add your cart logic here
@@ -84,6 +85,7 @@ export class ProductDetailsComponent implements OnInit {
       quantity: this.quantity,
   });
     }
+ // this.cartService.updateQuantity(id!, this.quantity);
   }
 
   buyNow(product: Product | null) {

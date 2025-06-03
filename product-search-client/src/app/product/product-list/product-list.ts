@@ -149,8 +149,8 @@ export class ProductList implements OnInit {
   //this.router.navigate(['/offers']); // or your desired route
 }
 
-getProduct(name:string){
-  alert(name); 
+getProduct(id:string){
+  this.router.navigate(['/products/', id]);
 }
 
 

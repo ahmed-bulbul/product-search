@@ -30,7 +30,6 @@ public class Product extends BaseEntity {
     private String color;
     private String model;
     private String rating;
-    private Set<String> images = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
@@ -39,6 +38,12 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductImage> images = new HashSet<>();
+
+
 
     public static Supplier<Product> defaultSupplier() {
         return () -> Product.builder()
