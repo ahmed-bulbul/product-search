@@ -4,7 +4,8 @@ import { NavigationEnd, Router, RouterLinkActive, RouterModule, RouterOutlet } f
 import { CartService } from './service/cart-service';
 import { CartBoxComponent } from './cart/cart-box-component/cart-box-component';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs';
+import { filter, Observable } from 'rxjs';
+import { AuthService } from './service/auth.service'; // Import AuthService
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { filter } from 'rxjs';
 })
 export class App implements OnInit{
   protected title = 'product-search-client';
+  isLoggedIn$: Observable<boolean>; // Observable for login status
 
   @ViewChild('cartBox') cartBox?: CartBoxComponent;
 
@@ -26,7 +28,13 @@ export class App implements OnInit{
 
   cartCount = 0;
 
-  constructor(private cartService: CartService,private router: Router) {}
+  constructor(
+    private cartService: CartService,
+    private router: Router,
+    private authService: AuthService // Inject AuthService
+  ) {
+    this.isLoggedIn$ = this.authService.isLoggedIn(); // Initialize isLoggedIn$
+  }
 
   ngOnInit(): void {
     this.cartService.cartCount$.subscribe(count => {
@@ -39,7 +47,6 @@ export class App implements OnInit{
       .subscribe((event: NavigationEnd) => {
         this.isAdminPanel = event.urlAfterRedirects.includes('admin');
       });
-  
   }
 
   isSidebarCollapsed = false;
@@ -49,9 +56,8 @@ export class App implements OnInit{
   }
 
   logout() {
-    // Clear token and redirect to login
-    localStorage.clear();
-    location.href = '/login';
+    this.authService.logout(); // Use AuthService for logout
+    this.router.navigate(['/login']); // Navigate to login page
   }
 
 }

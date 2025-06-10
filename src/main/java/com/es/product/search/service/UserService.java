@@ -16,9 +16,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Import Transactional
 
 import java.util.HashSet;
+import java.util.List; // Import List
 import java.util.Set;
+import java.util.stream.Collectors; // Import Collectors
+
+import com.es.product.search.dto.AdminUserUpdateDto; // Import DTO
 
 @Service
 public class UserService {
@@ -69,5 +74,50 @@ public class UserService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtUtil.generateToken(userDetails);
         return new JwtResponse(jwt);
+    }
+
+    // Admin methods
+    public List<User> getAllUsersForAdmin() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> getUserByIdForAdmin(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Transactional
+    public User updateUserAsAdmin(Long id, AdminUserUpdateDto userUpdateDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        if (userUpdateDto.getEnabled() != null) {
+            user.setEnabled(userUpdateDto.getEnabled());
+        }
+
+        if (userUpdateDto.getRoleNames() != null) {
+            Set<Role> newRoles = userUpdateDto.getRoleNames().stream()
+                    .map(roleName -> roleRepository.findByName(roleName)
+                            .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
+                    .collect(Collectors.toSet());
+            user.setRoles(newRoles);
+        }
+        // Add other updatable fields here, e.g., email
+        // if (userUpdateDto.getEmail() != null) {
+        //     user.setEmail(userUpdateDto.getEmail());
+        // }
+
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUserAsAdmin(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        // Consider business logic: what happens to user's data?
+        // For now, just delete the user.
+        // userRepository.delete(user);
+        // Or, if you want to keep user but disable, set enabled to false and remove sensitive data
+         user.setEnabled(false); // Soft delete example
+         userRepository.save(user);
     }
 }

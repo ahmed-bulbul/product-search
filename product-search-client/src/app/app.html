@@ -16,12 +16,19 @@
           <a routerLink="/products" 
             routerLinkActive="active" 
             class="nav-link" tabindex="1">Products</a>
-          <a href="/contact" class="nav-link" tabindex="2">Contact</a>
+          <a routerLink="/contact" routerLinkActive="active" class="nav-link" tabindex="2">Contact</a>
+          <ng-container *ngIf="!(isLoggedIn$ | async); else loggedInLinks">
+            <a routerLink="/login" routerLinkActive="active" class="nav-link" tabindex="3">Login</a>
+            <a routerLink="/register" routerLinkActive="active" class="nav-link" tabindex="4">Register</a>
+          </ng-container>
+          <ng-template #loggedInLinks>
+            <a (click)="logout()" class="nav-link" style="cursor: pointer;" tabindex="3">Logout</a>
+          </ng-template>
         </nav>
 
-        <button 
-        (click)="cartBox.toggleCart()" 
-        class="cart-button" 
+        <button
+        (click)="cartBox.toggleCart()"
+        class="cart-button"
         aria-haspopup="dialog"
         [attr.aria-expanded]="cartBox.show"
         aria-label="Toggle shopping cart"

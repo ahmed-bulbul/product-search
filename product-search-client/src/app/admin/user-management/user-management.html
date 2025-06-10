@@ -1,0 +1,76 @@
+<div class="container-fluid mt-3">
+  <h4>User Management</h4>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Enabled</th>
+        <th>Roles</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span [class.badge]="true" [class.bg-success]="user.enabled" [class.bg-danger]="!user.enabled">
+            {{ user.enabled ? 'Yes' : 'No' }}
+          </span>
+        </td>
+        <td>{{ getRoleNames(user.roles) }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-2" (click)="viewUser(user)">View</button>
+          <button class="btn btn-sm btn-primary me-2" (click)="editUser(user)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="!users || users.length === 0">
+        <td colspan="6" class="text-center">No users found.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- View User Modal/Section (Basic) -->
+  <div *ngIf="selectedUser" class="mt-4 p-3 border rounded">
+    <h5>User Details: {{ selectedUser.username }}</h5>
+    <p><strong>ID:</strong> {{ selectedUser.id }}</p>
+    <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+    <p><strong>Enabled:</strong> {{ selectedUser.enabled ? 'Yes' : 'No' }}</p>
+    <p><strong>Roles:</strong> {{ getRoleNames(selectedUser.roles) }}</p>
+    <button class="btn btn-secondary" (click)="closeViewUser()">Close</button>
+  </div>
+
+  <!-- Edit User Modal/Section (Basic) -->
+  <div *ngIf="userToEdit" class="mt-4 p-3 border rounded">
+    <h5>Edit User: {{ userToEdit.username }}</h5>
+    <form (ngSubmit)="saveUserChanges()" #editUserForm="ngForm">
+      <!-- Example: Edit Roles -->
+      <div class="mb-3">
+        <label for="userRoles" class="form-label">Roles:</label>
+        <select multiple class="form-select" id="userRoles" name="userRoles"
+                [(ngModel)]="userRolesMap[userToEdit.id]" #userRolesCtrl="ngModel">
+          <option *ngFor="let role of allRoles" [value]="role.id">{{ role.name.replace('ROLE_', '') }}</option>
+        </select>
+      </div>
+
+      <!-- Add other editable fields here if needed, e.g., enabled status -->
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="userEnabled" name="userEnabled"
+               [(ngModel)]="userToEdit.enabled" #enabledCtrl="ngModel">
+        <label class="form-check-label" for="userEnabled">Enabled</label>
+      </div>
+
+      <button type="submit" class="btn btn-success me-2" [disabled]="editUserForm.invalid">Save Changes</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+
+</div>

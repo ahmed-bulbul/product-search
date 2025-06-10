@@ -1,0 +1,50 @@
+<div class="container-fluid mt-3">
+  <h4>Permission Management</h4>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <button class="btn btn-success mb-3" (click)="toggleCreateForm()">
+    {{ showCreateForm ? 'Cancel' : 'Create New Permission' }}
+  </button>
+
+  <!-- Create Permission Form -->
+  <div *ngIf="showCreateForm" class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Create New Permission</h5>
+      <form (ngSubmit)="createPermission()" #createPermForm="ngForm">
+        <div class="mb-3">
+          <label for="newPermissionName" class="form-label">Permission Name (e.g., READ_REPORTS)</label>
+          <input type="text" class="form-control" id="newPermissionName" name="newPermissionName"
+                 [(ngModel)]="newPermissionData.name" required #permNameCtrl="ngModel">
+          <div *ngIf="permNameCtrl.invalid && (permNameCtrl.dirty || permNameCtrl.touched)" class="text-danger">
+            Permission name is required.
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="createPermForm.invalid">Save Permission</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Permission Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let perm of permissions">
+        <td>{{ perm.id }}</td>
+        <td>{{ perm.name }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" (click)="deletePermission(perm.id)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="!permissions || permissions.length === 0">
+        <td colspan="3" class="text-center">No permissions found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
