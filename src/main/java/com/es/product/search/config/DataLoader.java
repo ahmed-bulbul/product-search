@@ -3,14 +3,11 @@ package com.es.product.search.config;
 import com.es.product.search.index.ProductIndex;
 import com.es.product.search.models.Brand;
 import com.es.product.search.models.Category;
-import com.es.product.search.models.Product;
-import com.es.product.search.models.ProductImage;
-import com.es.product.search.respository.BrandRepository;
-import com.es.product.search.respository.CategoryRepository;
-import com.es.product.search.respository.ProductImageRepository;
-import com.es.product.search.respository.ProductRepository;
+import com.es.product.search.models.*;
+import com.es.product.search.respository.*;
 import com.es.product.search.service.ProductIndexService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -30,6 +27,10 @@ public class DataLoader implements ApplicationRunner {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final Random random = new Random();
 
@@ -114,6 +115,65 @@ public class DataLoader implements ApplicationRunner {
         System.out.println("✅ Loaded: 10 Brands, 10 Categories, 1000 Products.");
     }
 
+    private void loadSecurityData() {
+        // Create Permissions
+        Permission readProducts = permissionRepository.findByName("READ_PRODUCTS")
+                .orElseGet(() -> permissionRepository.save(Permission.builder().name("READ_PRODUCTS").build()));
+        Permission writeProducts = permissionRepository.findByName("WRITE_PRODUCTS")
+                .orElseGet(() -> permissionRepository.save(Permission.builder().name("WRITE_PRODUCTS").build()));
+        Permission manageUsers = permissionRepository.findByName("MANAGE_USERS")
+                .orElseGet(() -> permissionRepository.save(Permission.builder().name("MANAGE_USERS").build()));
+        Permission manageRoles = permissionRepository.findByName("MANAGE_ROLES")
+                .orElseGet(() -> permissionRepository.save(Permission.builder().name("MANAGE_ROLES").build()));
+        Permission managePermissions = permissionRepository.findByName("MANAGE_PERMISSIONS")
+                .orElseGet(() -> permissionRepository.save(Permission.builder().name("MANAGE_PERMISSIONS").build()));
+
+        // Create Roles
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                .orElseGet(() -> {
+                    Role role = Role.builder().name("ROLE_ADMIN").permissions(new HashSet<>()).build();
+                    role.getPermissions().add(readProducts);
+                    role.getPermissions().add(writeProducts);
+                    role.getPermissions().add(manageUsers);
+                    role.getPermissions().add(manageRoles);
+                    role.getPermissions().add(managePermissions);
+                    return roleRepository.save(role);
+                });
+
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    Role role = Role.builder().name("ROLE_USER").permissions(new HashSet<>()).build();
+                    role.getPermissions().add(readProducts);
+                    return roleRepository.save(role);
+                });
+
+        // Create a default admin user if not exists
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            User adminUser = User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("admin"))
+                    .email("admin@example.com")
+                    .enabled(true)
+                    .roles(Set.of(adminRole))
+                    .build();
+            userRepository.save(adminUser);
+            System.out.println("✅ Loaded: Default Admin User (admin/admin)");
+        }
+
+        if (userRepository.findByUsername("user").isEmpty()) {
+            User regularUser = User.builder()
+                    .username("user")
+                    .password(passwordEncoder.encode("user"))
+                    .email("user@example.com")
+                    .enabled(true)
+                    .roles(Set.of(userRole))
+                    .build();
+            userRepository.save(regularUser);
+             System.out.println("✅ Loaded: Default Regular User (user/user)");
+        }
+        System.out.println("✅ Loaded: Roles and Permissions.");
+    }
+
     // Brands and product types to generate meaningful names
     private final List<String> brands = List.of(
             "Apple", "Samsung", "Google", "OnePlus", "Sony", "LG", "Huawei", "Xiaomi", "Nokia", "Motorola"
@@ -125,6 +185,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        loadSecurityData(); // Load security-related data first
 
 //        if(1==1){
 //            productRepository.deleteAll();
@@ -145,7 +206,7 @@ public class DataLoader implements ApplicationRunner {
 
         if (productIndexService.count() > 0) {
             System.out.println("Products already loaded, skipping data initialization.");
-            return;
+            // return; // Commented out to allow security data to load even if products exist
         }
 
 
