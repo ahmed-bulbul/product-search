@@ -169,4 +169,45 @@ loadCategories() {
 }
 
 
+selectedCategories: number[] = [];
+priceFilter: number = 5000;
+selectedRatings: number[] = [];
+
+onCategoryChange(event: Event) {
+  const checkbox = event.target as HTMLInputElement;
+  const categoryId = +checkbox.value;
+  if (checkbox.checked) {
+    this.selectedCategories.push(categoryId);
+  } else {
+    this.selectedCategories = this.selectedCategories.filter(id => id !== categoryId);
+  }
+  this.applyFilters();
+}
+
+onPriceChange() {
+  this.applyFilters();
+}
+
+onRatingChange(event: Event) {
+  const checkbox = event.target as HTMLInputElement;
+  const rating = +checkbox.value;
+  if (checkbox.checked) {
+    this.selectedRatings.push(rating);
+  } else {
+    this.selectedRatings = this.selectedRatings.filter(r => r !== rating);
+  }
+  this.applyFilters();
+}
+
+applyFilters() {
+  // Call backend or filter products$ using selectedCategories, priceFilter, and selectedRatings
+  console.log('Filters applied:', {
+    categories: this.selectedCategories,
+    maxPrice: this.priceFilter,
+    ratings: this.selectedRatings
+  });
+
+  // Example: e
+
+}
 }

@@ -1,114 +1,156 @@
+<div class="search-promo-section">
+  <div class="search-wrapper">
+    <input
+      type="text"
+      placeholder="Search for amazing products..."
+      (input)="onSearch($event)"
+      (keydown.enter)="performSearch()"
+      [value]="searchText"
+      class="search-input"
+      [attr.aria-expanded]="results.length > 0"
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls="suggestions-list"
+      aria-haspopup="listbox"
+    />
+    <div *ngIf="loading$ | async" class="spinner" aria-label="Loading results"></div>
 
-
-<div class="search-container with-icon" style="margin-top: 15px; position: relative;">
-  <input
-    type="text"
-    placeholder="Search for products..."
-    (input)="onSearch($event)"
-    (keydown.enter)="performSearch()"
-    [value]="searchText"
-    class="search-input"
-    [attr.aria-expanded]="results.length > 0"
-    role="combobox"
-    aria-autocomplete="list"
-    aria-controls="suggestions-list"
-    aria-haspopup="listbox"
-  />
-
-  <div *ngIf="loading$ | async" class="spinner" aria-label="Loading results"></div>
-
-  <ul
-    *ngIf="results.length"
-    class="suggestions-list"
-    role="listbox"
-    id="suggestions-list"
-    aria-label="Search results"
-  >
-    <li
-      *ngFor="let product of results; let i = index"
-      class="suggestion-item"
-      role="option"
-      tabindex="0"
-      [attr.aria-selected]="i === selectedIndex"
-      (click)="getProduct(product.id)"
+    <ul
+      *ngIf="results.length"
+      class="suggestions-list"
+      role="listbox"
+      id="suggestions-list"
+      aria-label="Search results"
     >
-      <div class="product-name">{{ product.name }}</div>
-      <div class="product-desc">{{ product.description }}</div>
-      <div class="product-meta">
-        <span class="price">${{ product.price.toFixed(2) }}</span>
-        <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
-      </div>
-    </li>
-  </ul>
+      <li
+        *ngFor="let product of results; let i = index"
+        class="suggestion-item"
+        role="option"
+        tabindex="0"
+        [attr.aria-selected]="i === selectedIndex"
+        (click)="getProduct(product.id)"
+      >
+        <div class="product-info-suggestion">
+          <span class="product-name">{{ product.name }}</span>
+          <span class="product-meta-suggestion">
+            <span class="price">${{ product.price.toFixed(2) }}</span>
+            <span class="rating" *ngIf="product.rating">⭐ {{ product.rating }}</span>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-  <div class="promo-panels-container">
+  <div class="promo-panel-wrapper">
     <div class="promo-panel">
-      <h3>🔥 Limited Time Offer!</h3>
-      <p>Get up to <strong>50% OFF</strong> on select products.</p>
+      <h3>⚡ Flash Sale!</h3>
+      <p>Unbeatable deals: save up to **50% OFF** today!</p>
       <div class="countdown-timer" id="campaign-timer-1">00:10:00</div>
       <button class="shop-now-btn">Shop Now</button>
     </div>
   </div>
 </div>
 
-<!-- shows all categories -->
-
-<div class="categories-container">
+<!-- <div class="categories-nav">
   <button *ngFor="let cat of categories" class="category-btn">
     {{ cat.name }}
   </button>
-</div>
+</div> -->
 
-<div class="product-list-container">
-
-  <div *ngIf="loading$ | async" class="loading">Loading products...</div>
-
-  <div *ngIf="!(loading$ | async) && (products$ | async)?.length === 0" class="no-results">
-    No products found.
+<div class="product-listing-page">
+  <div *ngIf="loading$ | async" class="loading-indicator">Loading products...</div>
+  <div *ngIf="!(loading$ | async) && (products$ | async)?.length === 0" class="no-results-found">
+    No products found matching your criteria.
   </div>
 
-  <div class="products-grid" *ngIf="products$ | async as displayedProducts">
-    <div
-      class="product-card"
-      *ngFor="let product of displayedProducts; trackBy: trackById"
-      tabindex="0"
-      (click)="productDetails(product.id)"
-    >
-      <img
-        [src]="product.images?.[0] || 'assets/images/placeholder.jpg'"
-        [alt]="product.name"
-        class="product-image"
-        loading="lazy"
-      />
+  <div class="product-content-area">
+    <aside class="filter-sidebar">
+      <h3 class="filter-heading">Refine Your Search</h3>
 
-      <div class="product-info">
-        <h3 class="product-name" title="{{ product.name }}">{{ product.name }}</h3>
-        <p class="product-brand">{{ product.brand }}</p>
-        <p class="product-description">{{ product.description }}</p>
-        <div class="product-price-rating">
-          <span class="product-price">${{ product.price.toFixed(2) }}</span>
-          <span *ngIf="product.rating" [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
-            ★ {{ getRatingAsNumber(product.rating).toFixed(1) }}
-          </span>
+      <div class="filter-group">
+        <h4>Category</h4>
+        <div *ngFor="let category of categories">
+          <label class="checkbox-label">
+            <input type="checkbox" [value]="category.id" (change)="onCategoryChange($event)" />
+            <span class="custom-checkbox"></span>
+            {{ category.name }}
+          </label>
         </div>
       </div>
 
-      <div class="cart-action">
-        <button (click)="addToCart(product); $event.stopPropagation()" class="add-to-cart-btn">
-          ➕ Add to Cart
-        </button>
+      <div class="filter-group">
+        <h4>Price Range</h4>
+        <input
+          type="range"
+          min="0"
+          max="5000"
+          step="50"
+          [(ngModel)]="priceFilter"
+          (change)="onPriceChange()"
+          class="price-slider"
+        />
+        <div class="price-range-display">Up to <span class="price-value">${{ priceFilter }}</span></div>
+      </div>
 
-        <div *ngIf="addedProductIds.has(product.id)" class="added-confirmation" role="alert" aria-live="polite">
-          <span class="check-icon-text">✔️</span> Added to Cart
+      <div class="filter-group">
+        <h4>Customer Rating</h4>
+        <label class="checkbox-label">
+          <input type="checkbox" value="4" (change)="onRatingChange($event)" />
+          <span class="custom-checkbox"></span>
+          4★ & up
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="3" (change)="onRatingChange($event)" />
+          <span class="custom-checkbox"></span>
+          3★ & up
+        </label>
+      </div>
+    </aside>
+
+    <section class="products-grid-display" *ngIf="products$ | async as displayedProducts">
+      <div
+        class="product-card"
+        *ngFor="let product of displayedProducts; trackBy: trackById"
+        tabindex="0"
+        (click)="productDetails(product.id)"
+      >
+        <div class="product-image-container">
+          <img
+            [src]="product.images?.[0] || 'assets/images/placeholder.jpg'"
+            [alt]="product.name"
+            class="product-thumbnail"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="product-details">
+          <h3 class="product-title" title="{{ product.name }}">{{ product.name }}</h3>
+          <p class="product-brand">{{ product.brand }}</p>
+          <p class="product-description-short">{{ product.description }}</p>
+          <div class="product-price-rating-info">
+            <span class="product-price">${{ product.price.toFixed(2) }}</span>
+            <span *ngIf="product.rating" class="product-rating" [attr.aria-label]="'Rating: ' + product.rating + ' out of 5'">
+              ★ {{ getRatingAsNumber(product.rating).toFixed(1) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="cart-action-area">
+          <button (click)="addToCart(product); $event.stopPropagation()" class="add-to-cart-button">
+            <span class="icon-plus"></span> Add to Cart
+          </button>
+          <div *ngIf="addedProductIds.has(product.id)" class="added-confirmation" role="alert" aria-live="polite">
+            <span class="icon-check"></span> Added!
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
   <ng-container *ngIf="pageInfo$ | async as pageInfo">
-    <nav class="pagination" aria-label="Product pagination" *ngIf="pageInfo.totalPages > 1">
-      <button (click)="prevPage()" [disabled]="pageInfo.currentPage === 0" aria-label="Previous page">
-        &laquo; Prev
+    <nav class="pagination-controls" aria-label="Product pagination" *ngIf="pageInfo.totalPages > 1">
+      <button (click)="prevPage()" [disabled]="pageInfo.currentPage === 0" aria-label="Previous page" class="pagination-btn">
+        &laquo; Previous
       </button>
 
       <button
@@ -116,11 +158,12 @@
         [class.active]="pageInfo.currentPage === i"
         (click)="setPage(i + 1)"
         [attr.aria-current]="pageInfo.currentPage === i ? 'page' : null"
+        class="pagination-btn page-number-btn"
       >
         {{ i + 1 }}
       </button>
 
-      <button (click)="nextPage()" [disabled]="pageInfo.currentPage === pageInfo.totalPages - 1" aria-label="Next page">
+      <button (click)="nextPage()" [disabled]="pageInfo.currentPage === pageInfo.totalPages - 1" aria-label="Next page" class="pagination-btn">
         Next &raquo;
       </button>
     </nav>
