@@ -11,13 +11,17 @@ export class ProductService {
   private baseUrl = 'http://localhost:8080/api/v1/productIndex';
   private categoryUrl = 'http://localhost:8080/api/v1/categories';
 
-  search(query: string): Observable<Product[]> {
+  search(query: string): Observable<PageResponse<Product>> {
     if (!query?.trim()) {
-      return of([]);
+      return this.getAll();
     }
 
     const params = new HttpParams().set('name', query.trim());
-    return this.http.get<Product[]>(`${this.baseUrl}/search`, { params });
+    return this.http.get<PageResponse<Product>>(`${this.baseUrl}/search`, { params });
+  }
+
+  searchByMapParams(params: HttpParams): Observable<PageResponse<Product>> {
+    return this.http.get<PageResponse<Product>>(`${this.baseUrl}/search`, { params });
   }
 
   getAll(page: number = 0, size: number = 10): Observable<PageResponse<Product>> {

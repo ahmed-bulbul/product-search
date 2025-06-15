@@ -1,6 +1,7 @@
 package com.es.product.search.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -9,13 +10,13 @@ import com.es.product.search.respository.ProductIndexRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -55,33 +56,72 @@ public class ProductIndexService {
         return productIndexRepository.findAll(pageable);
     }
 
-    public List<ProductIndex> searchByName(String name) throws IOException {
-        if (name == null || name.isBlank()) {
-            return Collections.emptyList();
-        }
+    public Page<ProductIndex> searchByName(Map<String, String> filters, int page, int size) throws IOException {
+        String name = filters.get("name");
+        String categoryNames = filters.get("categoryNames");
+        List<String> categories = categoryNames != null
+                ? Arrays.stream(categoryNames.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toList()
+                : List.of();
 
-        int size = 10;
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .index("products")
-                .query(q -> q
-                        .bool(b -> b
-                                .should(sh -> sh.matchPhrasePrefix(mpp -> mpp.field("name").query(name)))
-                                .should(sh -> sh.match(m -> m.field("name").query(name)))
-                                .minimumShouldMatch("1")
-                        )
-                )
+                .from(page * size)
                 .size(size)
+                .query(q -> q.bool(b -> {
+                    boolean hasName = name != null && !name.isBlank();
+                    boolean hasCategories = categories != null && !categories.isEmpty();
+
+                    // Match product name
+                    if (hasName) {
+                        b.should(s -> s.matchPhrasePrefix(mpp -> mpp.field("name").query(name)));
+                        b.should(s -> s.match(m -> m.field("name").query(name)));
+                    }
+
+                    // Match any category name (nested query)
+                    if (hasCategories) {
+                        for (String cat : categories) {
+                            b.should(s -> s.nested(n -> n
+                                    .path("category")
+                                    .query(nq -> nq.match(m -> m
+                                            .field("category.name")
+                                            .query(cat)
+                                    ))
+                            ));
+                        }
+                    }
+
+                    // If we have should clauses, set minimum_should_match = 1
+                    if (hasName || hasCategories) {
+                        b.minimumShouldMatch("1");
+                    }
+
+                    return b;
+                }))
         );
 
-        log.info("Executing Elasticsearch search for name: {}", name);
 
+
+        log.info("Search request: {}", searchRequest);
+
+        // Execute query
         SearchResponse<ProductIndex> response = elasticsearchClient.search(searchRequest, ProductIndex.class);
 
-        return response.hits().hits().stream()
+        List<ProductIndex> content = response.hits().hits().stream()
                 .map(Hit::source)
                 .toList();
+
+        long totalHits = response.hits().total().value();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return new PageImpl<>(content, pageable, totalHits);
     }
+
+
+
 
     /**
      * Save or update the index.

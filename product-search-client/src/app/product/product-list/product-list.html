@@ -71,7 +71,7 @@
         <h4>Category</h4>
         <div *ngFor="let category of categories">
           <label class="checkbox-label">
-            <input type="checkbox" [value]="category.id" (change)="onCategoryChange($event)" />
+            <input type="checkbox" [value]="category.name" (change)="onCategoryChange($event)" />
             <span class="custom-checkbox"></span>
             {{ category.name }}
           </label>
@@ -97,12 +97,12 @@
         <label class="checkbox-label">
           <input type="checkbox" value="4" (change)="onRatingChange($event)" />
           <span class="custom-checkbox"></span>
-          4★ & up
+          4★ 
         </label>
         <label class="checkbox-label">
           <input type="checkbox" value="3" (change)="onRatingChange($event)" />
           <span class="custom-checkbox"></span>
-          3★ & up
+          3★ 
         </label>
       </div>
     </aside>
@@ -147,7 +147,7 @@
     </section>
   </div>
 
-  <ng-container *ngIf="pageInfo$ | async as pageInfo">
+  <ng-container *ngIf="pageInfo$ | async as pageInfo" class="pagination">
     <nav class="pagination-controls" aria-label="Product pagination" *ngIf="pageInfo.totalPages > 1">
       <button (click)="prevPage()" [disabled]="pageInfo.currentPage === 0" aria-label="Previous page" class="pagination-btn">
         &laquo; Previous

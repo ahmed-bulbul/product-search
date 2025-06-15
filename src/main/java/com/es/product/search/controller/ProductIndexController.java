@@ -14,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/productIndex")
@@ -38,8 +37,15 @@ public class ProductIndexController {
     }
 
     @GetMapping("/search")
-    public List<ProductIndex> search(@RequestParam String name) throws IOException {
-        return service.searchByName(name);
+    public ResponseEntity<PageResponse<ProductDto>> search(@RequestParam(required = false) String name,
+                                     @RequestParam(required = false) String categoryNames,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        if (name != null && !name.isBlank()) map.put("name", name);
+        if (categoryNames != null && !categoryNames.isBlank()) map.put("categoryNames", categoryNames);
+        var paged = service.searchByName(map,page,size);
+        return ResponseEntity.ok(mapper.toPageResponseIndex(paged));
     }
 
     @GetMapping("/{id}")

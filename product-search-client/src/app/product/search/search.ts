@@ -30,7 +30,7 @@ export class Search {
         return this.productIndexService.search(query);
       })
     ).subscribe(products => {
-      this.results = products;
+      this.results = products.content;
       this.loading = false;
       this.selectedIndex = -1;
     });

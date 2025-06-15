@@ -7,6 +7,7 @@ import { ProductService } from '../../service/product-service';
 import { CartService } from '../../service/cart-service';
 import { Product, PageResponse, Category } from '../../models/product';
 import { Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-list',
@@ -55,10 +56,12 @@ export class ProductList implements OnInit {
       debounceTime(300),
       switchMap(query => {
         this.loadingSubject.next(true);
-        return this.productIndexService.search(query);
+        //return this.productIndexService.search(query);
+        //querty set as name param
+        return this.productIndexService.searchByMapParams(new HttpParams().set('name', query)); 
       })
     ).subscribe(products => {
-      this.results = products;
+      this.results = products.content;
       this.loadingSubject.next(false);
       this.selectedIndex = -1;
     });
@@ -91,9 +94,30 @@ export class ProductList implements OnInit {
   nextPage() {
     const currentPage = this.pageInfoSubject.getValue().currentPage;
     const totalPages = this.pageInfoSubject.getValue().totalPages;
+
+    console.log('Current page:', currentPage);
+    console.log('Number of selected categories:', this.selectedCategories.length);
     
     if (currentPage < totalPages - 1) {
-      this.loadPage(currentPage + 1);
+
+
+      if(this.selectedCategories.length > 0) {
+
+        const params = new HttpParams()
+        .set('categoryNames', this.selectedCategories.join(','))
+        .set('page', currentPage+1)
+        .set('size', 50);
+        this.productService.searchByMapParams(params).subscribe(products => {
+          this.productsSubject.next(products.content);
+          this.pageInfoSubject.next({
+            currentPage: products.page,
+            totalPages: products.totalPages,
+            pageSize: products.size
+          })
+        });
+      }else{
+        this.loadPage(currentPage + 1);
+      }
     }
   }
 
@@ -101,12 +125,49 @@ export class ProductList implements OnInit {
     const currentPage = this.pageInfoSubject.getValue().currentPage;
     
     if (currentPage > 0) {
-      this.loadPage(currentPage - 1);
+
+      if(this.selectedCategories.length > 0) {
+
+        const params = new HttpParams()
+        .set('categoryNames', this.selectedCategories.join(','))
+        .set('page', currentPage-1)
+        .set('size', 50);
+        this.productService.searchByMapParams(params).subscribe(products => {
+          this.productsSubject.next(products.content);
+          this.pageInfoSubject.next({
+            currentPage: products.page,
+            totalPages: products.totalPages,
+            pageSize: products.size
+          })
+        });
+
+      }else{
+        this.loadPage(currentPage - 1);
+      }
+
+      
     }
   }
 
   setPage(page: number) {
-    this.loadPage(page - 1); // API uses zero-based indexing, but UI typically uses 1-based
+    if(this.selectedCategories.length > 0) {
+
+      const params = new HttpParams()
+      .set('categoryNames', this.selectedCategories.join(','))
+      .set('page', page-1)
+      .set('size', 50);
+      this.productService.searchByMapParams(params).subscribe(products => {
+        this.productsSubject.next(products.content);
+        this.pageInfoSubject.next({
+          currentPage: products.page,
+          totalPages: products.totalPages,
+          pageSize: products.size
+        })
+      });
+      
+    }else{
+      this.loadPage(page - 1);
+    }
   }
 
   getPageArray(): number[] {
@@ -169,17 +230,18 @@ loadCategories() {
 }
 
 
-selectedCategories: number[] = [];
+selectedCategories: string[] = [];
 priceFilter: number = 5000;
 selectedRatings: number[] = [];
 
 onCategoryChange(event: Event) {
   const checkbox = event.target as HTMLInputElement;
-  const categoryId = +checkbox.value;
+  const categoryNames = checkbox.value;
+  console.log('categoryId', checkbox.value);
   if (checkbox.checked) {
-    this.selectedCategories.push(categoryId);
+    this.selectedCategories.push(categoryNames);
   } else {
-    this.selectedCategories = this.selectedCategories.filter(id => id !== categoryId);
+    this.selectedCategories = this.selectedCategories.filter(name => name !== categoryNames);
   }
   this.applyFilters();
 }
@@ -205,6 +267,24 @@ applyFilters() {
     categories: this.selectedCategories,
     maxPrice: this.priceFilter,
     ratings: this.selectedRatings
+  });
+
+  //call search api with categorie params
+  const params = new HttpParams()
+   .set('categoryNames', this.selectedCategories.join(','))
+   .set('page', 0)
+   .set('size', 50);
+
+  // .set('maxPrice', this.priceFilter.toString())
+  // .set('ratings', this.selectedRatings.join(','));
+  
+  this.productService.searchByMapParams(params).subscribe(products => {
+    this.productsSubject.next(products.content);
+    this.pageInfoSubject.next({
+      currentPage: products.page,
+      totalPages: products.totalPages,
+      pageSize: products.size
+    })
   });
 
   // Example: e
